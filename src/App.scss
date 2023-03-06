@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@700&family=Tilt+Neon&display=swap');
+
+// Then import Bootstrap
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+html,
+body,
+#root,
+.app,
+.content {
+    height: 100%;
+    width: 100%;
+    font-family: 'Tilt Neon', cursive;
+}
+
+.app {
+    display: flex;
+    position: relative;
+}
+
+// Scrollbar Styles
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+// Track
+::-webkit-scrollbar-track {
+    background: #e0e0e0;
+}
+
+// Handled
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+// Handle on Hover
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
