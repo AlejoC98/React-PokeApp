@@ -1,41 +1,105 @@
-import { Box, IconButton, Menu, MenuItem, AppBar, useTheme, Toolbar, InputBase } from "@mui/material";
-import { Container } from "@mui/system";
-import MenuIcon from '@mui/icons-material/Menu';
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { ColorModeContext, tokens } from "../../theme";
-import SearchIcon from "@mui/icons-material/Search";
+import { useTheme, Box, IconButton, Avatar, MenuList, MenuItem, Popper, AppBar, Toolbar } from '@mui/material';
+import { styled, alpha } from '@mui/material/styles';
+import InputBase from "@mui/material/InputBase";
+import SearchIcon from '@mui/icons-material/Search';
+import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
+import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
+import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 
-const TopBar = () => {
-  
+const Topbar = () => {
+
   const theme = useTheme();
-  const colors = tokens(theme.pallet.mode);
+  const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
+  // Functions for user menu popper
+  const [anchorEl, setAnchorEl] = useState(null);
+  const handleClick = (event) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
+  const open = Boolean(anchorEl);
+  const id = open ? "user-menu" : undefined;
+
+  // Sarchbar Styles
+  const Search = styled('div')(({ theme }) => ({
+    position: 'relative',
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: theme.palette.mode === "dark" ? alpha(theme.palette.common.white, 0.15) : colors.spacecadet[700],
+    '&:hover': {
+      backgroundColor: theme.palette.mode === "dark" ? colors.spacecadet[400] : colors.spacecadet[600],
+    },
+    marginLeft: 0,
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.spacing(1),
+      width: 'auto',
+    },
+  }));
+  
+  const SearchIconWrapper = styled('div')(({ theme }) => ({
+    padding: theme.spacing(0, 2),
+    height: '100%',
+    position: 'absolute',
+    pointerEvents: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  }));
+  
+  const StyledInputBase = styled(InputBase)(({ theme }) => ({
+    color: 'inherit',
+    '& .MuiInputBase-input': {
+      padding: theme.spacing(1, 1, 1, 0),
+      // vertical padding + font size from searchIcon
+      paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+      transition: theme.transitions.create('width'),
+      width: '100%',
+      [theme.breakpoints.up('sm')]: {
+        width: '12ch',
+        '&:focus': {
+          width: '20ch',
+        },
+      },
+    },
+  }));
 
   return (
-    <Box display="flex" position="relative" justifyContent="space-between" backgroundColor={colors.spacecadet[500]} left={200}>
-      <AppBar position="static">
-        <Container maxWidth="x1">
-          <Toolbar>
-            <Box flexGrow={1} display={{ xs:'flex', md: 'none'}}>
-              <IconButton size="large" aria-label="User" aria-controls="menu-appbar" aria-haspopup="true" color="inherit">
-                <MenuIcon />
-              </IconButton>
-              <Menu id="menu-appbar"anchorOrigin={{ vertical: "bottom", horizontal: 'left'}}>
-
-              </Menu>
-            </Box>
-            <Box>
-              <InputBase>
-                <IconButton>
-                  <SearchIcon/>
-                </IconButton>
-              </InputBase>
-            </Box>
-          </Toolbar>
-        </Container>
+    <Box flexGrow={1} display="flex">
+      <AppBar sx={{ background: "transparent", boxShadow: "none", left: 90, width: "90%"}}>
+        <Toolbar sx={{ display: "flex", justifyContent: "space-between"}}>
+          <Search>
+            <SearchIconWrapper>
+              <SearchIcon/>
+            </SearchIconWrapper>
+            <StyledInputBase placeholder="Search.." aria-label="search"/>
+          </Search>
+          <Box display="flex">
+            <IconButton onClick={colorMode.toggleColorMode}>
+              {theme.palette.mode === "dark" ? (
+                <LightModeOutlinedIcon/>
+                ) : (
+                  <DarkModeOutlinedIcon/>
+              )}
+            </IconButton>
+            <IconButton>
+              <NotificationsOutlinedIcon/>
+            </IconButton>
+            <IconButton aria-describedby={id} onClick={handleClick}>
+              <Avatar alt="Alejandro" src="/static/images/avatar/2.jpg" />
+            </IconButton>
+            <Popper id={id} open={open} anchorEl={anchorEl}>
+              <MenuList sx={{ background: colors.spacecadet[600]}}>
+                  <MenuItem>My Account</MenuItem>
+                  <MenuItem>Awards</MenuItem>
+                  <MenuItem>Logout</MenuItem>
+              </MenuList>
+            </Popper>
+          </Box>
+        </Toolbar>  
       </AppBar>
     </Box>
-  )
-}
+  );
+};
 
-export default TopBar
+export default Topbar;
