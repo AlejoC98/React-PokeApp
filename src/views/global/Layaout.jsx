@@ -2,7 +2,7 @@ import React from 'react';
 // import {ColorModeContext, useMode} from "./theme";
 import { ColorModeContext, tokens, useMode } from '../../theme';
 import { Box, CssBaseline, ThemeProvider, useTheme } from "@mui/material";
-import { Outlet, Route, Routes } from "react-router-dom";
+import { Outlet} from "react-router-dom";
 import TopBar from './TopBar';
 import LeftBar from './LeftBar'
 
@@ -40,7 +40,8 @@ const AuthLayout = () => {
         <ColorModeContext.Provider value={colorMode}>
             <ThemeProvider theme={theme}>
                 <CssBaseline />
-                <Box display="flex" justifyContent="center" alignItems="center" sx={{ backgroundImage: 'url(/static/images/login-wallpaper.jpg)', minHeight: "100vh", backgroundSize: "cover" }}>
+                <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+                  <Box display="flex" top={0} bottom={0} left={0} right={0} position="absolute" sx={{ backgroundImage: 'url(/static/images/login-wallpaper.jpg)', backgroundSize: "contain", filter: 'blur(3px)' }}></Box>
                     <Outlet />
                 </Box>
             </ThemeProvider>

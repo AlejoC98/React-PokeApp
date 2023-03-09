@@ -1,12 +1,128 @@
-import { Box, TextField } from '@mui/material'
-import React from 'react'
+import { Box, TextField, Button, InputAdornment, IconButton, Typography } from '@mui/material'
+import React from 'react';
+import { useTheme } from '@mui/material';
+import { tokens } from '../../theme';
+import { Formik } from 'formik';
+import * as yup from "yup";
+import useMediaQuery from '@mui/material/useMediaQuery';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import PersonIcon from '@mui/icons-material/Person';
+import LoginIcon from '@mui/icons-material/Login';
+
+const initialValues = {
+  username: "",
+  password: ""
+}
+
+const accountSchema = yup.object().shape({
+  username: yup.string().email("Invalid email").required("This field is required"),
+  password: yup.string().required("This field is required"),
+});
 
 const Login = () => {
+
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  const isNonMobile = useMediaQuery("(min-width:600px)");
+  
+  const handleFormSubmit = (values) => {
+    console.log(values);
+  }
+
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
   return (
-    <Box display="flex">
-      <form>
-        <TextField id='username' label='Username' variant='standard' fullWidth/>
-      </form>
+    <Box display="flex" backdr p={5} flexDirection="column" borderRadius={2} zIndex={1000} sx={{ backdropFilter: "initial", WebkitBackdropFilter: "blur(10px)", background: 'RGBA(51,51,51,0.42)' }}>
+      <h1 style={{ textAlign: 'center'}}>Login</h1>
+      <Formik
+        onSubmit={handleFormSubmit}
+        initialValues={initialValues}
+        validationSchema={accountSchema}
+      >
+        {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (
+          <form onSubmit={handleSubmit}>
+            <Box
+              display="grid"
+              gap="30px"
+              gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+              sx={{
+                "& > div": { gridColumn: isNonMobile ? undefined : "span 4" }
+              }}
+            >
+              <TextField
+                fullWidth
+                variant='outlined'
+                type="email"
+                label="Username"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.username}
+                name="username"
+                error={!!touched.username && !!errors.username}
+                helperText={touched.username && errors.username}
+                sx={{
+                  gridColumn: "span 4"
+                }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position='start'>
+                      <PersonIcon />
+                    </InputAdornment>
+                  )
+                }}
+
+              />
+
+              <TextField
+                fullWidth
+                variant='outlined'
+                type={showPassword ? 'text' : 'password'}
+                name='password'
+                label="Password"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.password}
+                error={!!touched.password && !!errors.password}
+                helperText={touched.password && errors.password}
+                sx={{
+                  gridColumn: "span 4"
+                }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <IconButton
+                        aria-label="Toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
+              />
+            </Box>
+            <Box display="flex" justifyContent="center" mt={2}>
+              <Button type='submit' color='secondary' variant='contained' endIcon={<LoginIcon />} fullWidth>
+                Log In
+              </Button>
+            </Box>
+          </form>
+        )}
+      </Formik>
+      <Box display="flex" justifyContent="end" color="primary">
+        <Button href='/SignIn'>
+          Sign In
+        </Button>
+      </Box>
+
     </Box>
   )
 }
