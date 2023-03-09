@@ -1,8 +1,10 @@
+import { Box } from "@mui/material"
+
 const Dashboard = () => {
   return (
-    <div>
-      
-    </div>
+    <Box position="fixed" left={105} display="flex" flexWrap="wrap">
+      Dashboard
+    </Box>
   )
 }
 

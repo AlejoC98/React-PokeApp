@@ -23,6 +23,7 @@ const Topbar = () => {
 
   // Sarchbar Styles
   const Search = styled('div')(({ theme }) => ({
+    display: 'flex',
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
     backgroundColor: theme.palette.mode === "dark" ? alpha(theme.palette.common.white, 0.15) : colors.spacecadet[700],
@@ -65,36 +66,40 @@ const Topbar = () => {
   }));
 
   return (
-    <Box flexGrow={1} display="flex">
-      <AppBar sx={{ background: "transparent", boxShadow: "none", left: 90, width: "90%"}}>
-        <Toolbar sx={{ display: "flex", justifyContent: "space-between"}}>
+    <Box flexGrow={1}>
+      <AppBar position="static" sx={{ background: "transparent", boxShadow: "none", left: 90}}>
+        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between'}}>
           <Search>
             <SearchIconWrapper>
               <SearchIcon/>
             </SearchIconWrapper>
             <StyledInputBase placeholder="Search.." aria-label="search"/>
           </Search>
-          <Box display="flex">
-            <IconButton onClick={colorMode.toggleColorMode}>
-              {theme.palette.mode === "dark" ? (
-                <LightModeOutlinedIcon/>
-                ) : (
-                  <DarkModeOutlinedIcon/>
-              )}
-            </IconButton>
-            <IconButton>
-              <NotificationsOutlinedIcon/>
-            </IconButton>
-            <IconButton aria-describedby={id} onClick={handleClick}>
-              <Avatar alt="Alejandro" src="/static/images/avatar/2.jpg" />
-            </IconButton>
-            <Popper id={id} open={open} anchorEl={anchorEl}>
-              <MenuList sx={{ background: colors.spacecadet[600]}}>
-                  <MenuItem>My Account</MenuItem>
-                  <MenuItem>Awards</MenuItem>
-                  <MenuItem>Logout</MenuItem>
-              </MenuList>
-            </Popper>
+          <Box display="flex" alignItems="center">
+            <Box>
+              <IconButton onClick={colorMode.toggleColorMode}>
+                {theme.palette.mode === "dark" ? (
+                  <LightModeOutlinedIcon/>
+                  ) : (
+                    <DarkModeOutlinedIcon/>
+                )}
+              </IconButton>
+              <IconButton>
+                <NotificationsOutlinedIcon />
+              </IconButton>
+            </Box>
+            <Box>
+              <IconButton aria-describedby={id} onClick={handleClick}>
+                <Avatar alt="Alejandro" src="/static/images/avatar/2.jpg" />
+              </IconButton>
+              <Popper id={id} open={open} anchorEl={anchorEl}>
+                <MenuList sx={{ background: colors.spacecadet[600]}}>
+                    <MenuItem>My Account</MenuItem>
+                    <MenuItem>Awards</MenuItem>
+                    <MenuItem>Logout</MenuItem>
+                </MenuList>
+              </Popper>
+            </Box>
           </Box>
         </Toolbar>  
       </AppBar>
