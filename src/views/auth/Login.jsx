@@ -1,7 +1,7 @@
-import { Box, TextField, Button, InputAdornment, IconButton, Typography } from '@mui/material'
+import { Box, TextField, Button, InputAdornment, IconButton } from '@mui/material'
 import React from 'react';
-import { useTheme } from '@mui/material';
-import { tokens } from '../../theme';
+// import { useTheme } from '@mui/material';
+// import { tokens } from '../../theme';
 import { Formik } from 'formik';
 import * as yup from "yup";
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -22,8 +22,8 @@ const accountSchema = yup.object().shape({
 
 const Login = () => {
 
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
+  // const theme = useTheme();
+  // const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
   
   const handleFormSubmit = (values) => {
@@ -39,7 +39,7 @@ const Login = () => {
   };
 
   return (
-    <Box display="flex" backdr p={5} flexDirection="column" borderRadius={2} zIndex={1000} sx={{ backdropFilter: "initial", WebkitBackdropFilter: "blur(10px)", background: 'RGBA(51,51,51,0.42)' }}>
+    <Box>
       <h1 style={{ textAlign: 'center'}}>Login</h1>
       <Formik
         onSubmit={handleFormSubmit}
@@ -109,7 +109,7 @@ const Login = () => {
                 }}
               />
             </Box>
-            <Box display="flex" justifyContent="center" mt={2}>
+            <Box mt={2}>
               <Button type='submit' color='secondary' variant='contained' endIcon={<LoginIcon />} fullWidth>
                 Log In
               </Button>
@@ -117,12 +117,14 @@ const Login = () => {
           </form>
         )}
       </Formik>
-      <Box display="flex" justifyContent="end" color="primary">
+      <Box display="flex" color="primary" flexDirection="column" alignItems='end' mt={1}>
         <Button href='/SignIn'>
           Sign In
         </Button>
+        <Button href='/Recovery'>
+          Forgot Password?
+        </Button>
       </Box>
-
     </Box>
   )
 }
