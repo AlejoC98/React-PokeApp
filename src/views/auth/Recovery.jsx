@@ -3,28 +3,36 @@ import { Formik } from 'formik'
 import React from 'react'
 import * as yup from 'yup'
 import SendIcon from '@mui/icons-material/Send';
+import { UserAuth } from '../../context/AuthContext';
 
 const initialValues = {
-    email: ''
+    username: ''
 }
 
 const recoverySchema = yup.object().shape({
-    email: yup.string().email("Invalid email").required('This field is required')
+    username: yup.string().email("Invalid email").required('This field is required')
 });
 
 const Recovery = () => {
 
+    const { recoveryPassword } = UserAuth();
+
     const isNonMobile = useMediaQuery("(min-width:600px)");
 
-    const handleSubmit = (values) => {
-        console.log(values);
+    const handleFormSubmit = async(values) => {
+        await recoveryPassword(values.username).then((res) => {
+            // We need to call notification function
+            console.log(res);
+        }).catch((err) => {
+            console.log(err);
+        });
     }
 
   return (
     <Box>
         <h1 style={{ textAlign: 'center' }}>Recovery Password</h1>
         <Formik
-            onSubmit={handleSubmit}
+            onSubmit={handleFormSubmit}
             initialValues={initialValues}
             validationSchema={recoverySchema}
         >
@@ -41,16 +49,16 @@ const Recovery = () => {
                         <TextField 
                             fullWidth
                             variant='outlined'
-                            type='email'
-                            label='Email'
+                            type="email"
+                            label="Username"
                             onBlur={handleBlur}
                             onChange={handleChange}
-                            value={values.email}
-                            name='username'
-                            error={!!touched.email && !!errors.email}
-                            helperText={touched.email && errors.email}
+                            value={values.username}
+                            name="username"
+                            error={!!touched.username && !!errors.username}
+                            helperText={touched.username && errors.username}
                             sx={{
-                                gridColumn: 'span 4'
+                              gridColumn: "span 4"
                             }}
                         />
                     </Box>

@@ -7,8 +7,13 @@ import SearchIcon from '@mui/icons-material/Search';
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
+import { UserAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Topbar = () => {
+
+  const { user, logOut } = UserAuth();
+  const navigate = useNavigate();
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -64,7 +69,14 @@ const Topbar = () => {
       },
     },
   }));
-
+  
+  const handleLogOut = async() => {
+    await logOut().then((res) => {
+      navigate('/Login');
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
   return (
     <Box flexGrow={1}>
       <AppBar position="static" sx={{ background: "transparent", boxShadow: "none", left: 90}}>
@@ -90,13 +102,13 @@ const Topbar = () => {
             </Box>
             <Box>
               <IconButton aria-describedby={id} onClick={handleClick}>
-                <Avatar alt="Alejandro" src="/static/images/avatar/2.jpg" />
+                <Avatar alt={user.displayName} src={user.photoURL} />
               </IconButton>
               <Popper id={id} open={open} anchorEl={anchorEl}>
                 <MenuList sx={{ background: colors.spacecadet[600]}}>
                     <MenuItem>My Account</MenuItem>
                     <MenuItem>Awards</MenuItem>
-                    <MenuItem>Logout</MenuItem>
+                    <MenuItem onClick={handleLogOut}>Logout</MenuItem>
                 </MenuList>
               </Popper>
             </Box>

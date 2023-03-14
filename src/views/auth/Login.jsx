@@ -9,6 +9,8 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import PersonIcon from '@mui/icons-material/Person';
 import LoginIcon from '@mui/icons-material/Login';
+import { UserAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const initialValues = {
   username: "",
@@ -22,12 +24,19 @@ const accountSchema = yup.object().shape({
 
 const Login = () => {
 
+  const navigate = useNavigate();
+  const { signIn } = UserAuth();
+
   // const theme = useTheme();
   // const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
   
-  const handleFormSubmit = (values) => {
-    console.log(values);
+  const handleFormSubmit = async(values) => {
+    await signIn(values.username, values.password).then(() => {
+      navigate("/Dashboard");
+    }).catch((err) => {
+      console.log(err);
+    });
   }
 
   const [showPassword, setShowPassword] = React.useState(false);

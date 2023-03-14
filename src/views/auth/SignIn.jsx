@@ -1,12 +1,15 @@
 import { Button, IconButton, InputAdornment, TextField, useMediaQuery } from '@mui/material'
 import { Box } from '@mui/system'
 import { Formik } from 'formik'
-import React from 'react'
+// import React from 'react'
+import { useState } from 'react'
 import * as yup from 'yup'
 import LoginIcon from '@mui/icons-material/Login';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { PhotoCamera } from '@mui/icons-material'
+import { PhotoCamera } from '@mui/icons-material';
+import { UserAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom'
 
 const initialValues = {
     firstName: '',
@@ -24,16 +27,31 @@ const registerSchema = yup.object().shape({
 
 const SignIn = () => {
 
-    const handleSubmit = (values) => {
-        console.log("Perro");
+    const [imageUpload, setImageUpload] = useState();
+
+    const { createUser } = UserAuth();
+
+    const navigate = useNavigate();
+
+    const handleSubmit = async (values, event) => {
+        // await createUser(values.firstName, values.lastName, values.email, values.password, imageUpload);
+        await createUser(values.firstName, values.lastName, values.email, values.password, imageUpload).then((res) => {
+            (res === true) ? navigate("/") : event.preventDefault();            
+        }).catch((err) => {
+            console.log(err);
+        });
     }
 
-    const [showPassword, setShowPassword] = React.useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
+    };
+
+    const handleUploadImage = (fileInput) => {
+        setImageUpload(fileInput.target.files[0]);
     };
 
     const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -105,7 +123,7 @@ const SignIn = () => {
                             <IconButton color='secondary' aria-label='upload picture' component='label' sx={{
                                 gridColumn: 'span 1'
                             }}>
-                                <input hidden accept='image/*' type='file' />
+                                <input hidden accept='image/*' type='file' name="img_profile" onChange={handleUploadImage}/>
                                 <PhotoCamera />
                             </IconButton>
 
