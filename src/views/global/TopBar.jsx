@@ -11,20 +11,19 @@ import { UserAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const Topbar = () => {
-
+  // Setting const
   const { user, logOut } = UserAuth();
   const navigate = useNavigate();
-
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
-  // Functions for user menu popper
   const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const id = open ? "user-menu" : undefined;
+  // Functions for user menu popper
   const handleClick = (event) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
-  const open = Boolean(anchorEl);
-  const id = open ? "user-menu" : undefined;
 
   // Sarchbar Styles
   const Search = styled('div')(({ theme }) => ({
@@ -102,7 +101,7 @@ const Topbar = () => {
             </Box>
             <Box>
               <IconButton aria-describedby={id} onClick={handleClick}>
-                <Avatar alt={user.displayName} src={user.photoURL} />
+                <Avatar alt={user !== null ? user.displayName : "temp"} src={user !== null ? user.photoURL : "http://"} />
               </IconButton>
               <Popper id={id} open={open} anchorEl={anchorEl}>
                 <MenuList sx={{ background: colors.spacecadet[600]}}>
