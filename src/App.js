@@ -3,6 +3,7 @@ import Dashboard from "./views/dashboard";
 import Login from "./views/auth/Login";
 import SignIn from "./views/auth/SignIn";
 import Recovery from "./views/auth/Recovery";
+import Game from "./views/game";
 import { AuthLayout, AppLayaout } from "./views/global/Layaout";
 import { AuthContextProvider } from "./context/AuthContext";
 import { ProtectedRoute, ProtectedLoggedRoute } from './components/ProtectedRoute';
@@ -17,6 +18,7 @@ function App() {
           </ProtectedRoute>
           }>
           <Route path="/Dashboard" element={<Dashboard />}/>
+          <Route path="/Game" element={<Game />}/>
         </Route>
         <Route path="/" element={
           <ProtectedLoggedRoute>
