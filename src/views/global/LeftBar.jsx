@@ -1,4 +1,4 @@
-import { ListItem, List, useTheme, ListItemIcon, ListItemAvatar, Avatar, MenuItem } from "@mui/material";
+import { ListItem, List, useTheme, ListItemIcon, ListItemAvatar, Avatar, MenuItem, alpha } from "@mui/material";
 import { Box } from "@mui/material";
 import { tokens } from "../../theme";
 // Icons
@@ -20,14 +20,10 @@ const Item = ({ title, to, icon, selected, setSelected}) => {
       selected={selected === title} 
       onClick={() => setSelected(title)}
       sx={{
-        padding: 2,
-        "&& .Mui-selected": {
-          backgroundColor: colors.orange[500],
-          color: "red"
-        }
+        "&.Mui-selected" : { backgroundColor: alpha(colors.orange[500], 0.25) }
       }}
     >
-      <ListItemIcon sx={{ display: 'flex', justifyContent: 'center', color: "#ffffff"}}>
+      <ListItemIcon sx={{ display: 'flex', justifyContent: 'center', color: "#ffffff", padding: 1}}>
         { icon }
       </ListItemIcon>
     </MenuItem>
