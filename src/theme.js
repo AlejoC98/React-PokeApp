@@ -60,8 +60,29 @@ export const tokens = (mode) => ({
             800: "#581715",
             900: "#2c0c0a"
         },
-      }
-    : {
+        yellow: {
+          100: "#fef4da",
+          200: "#feeab5",
+          300: "#fddf90",
+          400: "#fdd56b",
+          500: "#fcca46",
+          600: "#caa238",
+          700: "#97792a",
+          800: "#65511c",
+          900: "#32280e"
+      },
+      gray: {
+        100: "#ebefee",
+        200: "#d7dfdd",
+        300: "#c4cecb",
+        400: "#b0beba",
+        500: "#9caea9",
+        600: "#7d8b87",
+        700: "#5e6865",
+        800: "#3e4644",
+        900: "#1f2322"
+      },
+    } : {
         orange: {
             100: "#fce6d3",
             200: "#f9cda7",
@@ -117,6 +138,28 @@ export const tokens = (mode) => ({
             800: "#f1b0ae",
             900: "#f8d8d6",
         },
+        yellow: {
+          100: "#32280e",
+          200: "#65511c",
+          300: "#97792a",
+          400: "#caa238",
+          500: "#fcca46",
+          600: "#fdd56b",
+          700: "#fddf90",
+          800: "#feeab5",
+          900: "#fef4da",
+      },
+      gray: {
+        100: "#1f2322",
+        200: "#3e4644",
+        300: "#5e6865",
+        400: "#7d8b87",
+        500: "#9caea9",
+        600: "#b0beba",
+        700: "#c4cecb",
+        800: "#d7dfdd",
+        900: "#ebefee",
+    },
       }),
 });
 
@@ -130,10 +173,16 @@ export const themeSettings = (mode) => {
         ? {
             // palette values for dark mode
             primary: {
-              main: colors.spacecadet[500],
+              main: colors.midnightgreen[500],
             },
             secondary: {
-              main: colors.caribbean[500],
+              main: colors.gray[500],
+            },
+            danger: {
+              main: colors.poppy[500]
+            },
+            warning: {
+              main: colors.orange[500],
             },
             neutral: {
               dark: colors.orange[700],
@@ -147,7 +196,7 @@ export const themeSettings = (mode) => {
         : {
             // palette values for light mode
             primary: {
-              main: colors.spacecadet[100],
+              main: colors.midnightgreen[600],
             },
             secondary: {
               main: colors.caribbean[500],

@@ -1,5 +1,3 @@
-import React from 'react';
-// import {ColorModeContext, useMode} from "./theme";
 import { ColorModeContext, tokens, useMode } from '../../theme';
 import { Box, CssBaseline, ThemeProvider, useTheme } from "@mui/material";
 import { Outlet } from "react-router-dom";
@@ -18,7 +16,9 @@ const AppLayaout = () => {
           <LeftBar/>
           <main className="content">
             <TopBar />
-            <Outlet />
+            <Box className="container-fluid" paddingLeft={4} paddingRight={3} paddingTop={3}>
+              <Outlet />
+            </Box>
           </main>
         </div>
       </ThemeProvider>

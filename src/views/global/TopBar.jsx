@@ -9,6 +9,7 @@ import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import { UserAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import DialogComponent from "../../components/DialogComponent";
 
 const Topbar = () => {
   // Setting const
@@ -20,6 +21,7 @@ const Topbar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const id = open ? "user-menu" : undefined;
+
   // Functions for user menu popper
   const handleClick = (event) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
@@ -75,7 +77,8 @@ const Topbar = () => {
     }).catch((err) => {
       console.log(err);
     })
-  }
+  };
+
   return (
     <Box flexGrow={1}>
       <AppBar position="static" sx={{ background: "transparent", boxShadow: "none", left: 90}}>
@@ -87,6 +90,9 @@ const Topbar = () => {
             <StyledInputBase placeholder="Search.." aria-label="search"/>
           </Search>
           <Box display="flex" alignItems="center">
+            <Box>
+            <DialogComponent title='Create New Game' buttonText={'Create'} innerModule='./NewGameFormComponent' />
+            </Box>
             <Box>
               <IconButton onClick={colorMode.toggleColorMode}>
                 {theme.palette.mode === "dark" ? (

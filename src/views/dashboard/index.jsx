@@ -3,8 +3,16 @@ import { Box } from "@mui/material";
 const Dashboard = () => {
 
   return (
-    <Box position="fixed" left={105} display="flex" flexWrap="wrap">
-      Dashboard
+    <Box className="block-container">
+      <Box className="block" gridColumn="span 2">
+        Dashboard
+      </Box>
+      <Box className="block" gridColumn="span 1">
+        Dashboard
+      </Box>
+      <Box className="block" gridColumn="span 1">
+        Dashboard
+      </Box>
     </Box>
   )
 }
