@@ -79,26 +79,30 @@ const Topbar = () => {
     })
   };
 
+  console.log(theme.palette.background.default);
+
   return (
-    <Box flexGrow={1}>
-      <AppBar position="static" sx={{ background: "transparent", boxShadow: "none", left: 90}}>
-        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between'}}>
+    <Box 
+      backgroundColor={theme.palette.mode === 'dark' ? colors.spacecadet[600] : '#fcfcfc'}
+    >
+      <AppBar position="fixed" sx={{ left: 100, width: 'calc(100% - 100px)', background: "transparent", boxShadow: "none"}}>
+        <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Search>
             <SearchIconWrapper>
-              <SearchIcon/>
+              <SearchIcon />
             </SearchIconWrapper>
-            <StyledInputBase placeholder="Search.." aria-label="search"/>
+            <StyledInputBase placeholder="Search.." aria-label="search" />
           </Search>
           <Box display="flex" alignItems="center">
             <Box>
-            <DialogComponent title='Create New Game' buttonText={'Create'} innerModule='./NewGameFormComponent' />
+              <DialogComponent title='Create New Game' buttonText={'Create'} innerModule='./NewGameFormComponent' />
             </Box>
             <Box>
               <IconButton onClick={colorMode.toggleColorMode}>
                 {theme.palette.mode === "dark" ? (
-                  <LightModeOutlinedIcon/>
-                  ) : (
-                    <DarkModeOutlinedIcon/>
+                  <LightModeOutlinedIcon />
+                ) : (
+                  <DarkModeOutlinedIcon />
                 )}
               </IconButton>
               <IconButton>
@@ -110,15 +114,15 @@ const Topbar = () => {
                 <Avatar alt={user !== null ? user.displayName : "temp"} src={user !== null ? user.photoURL : "http://"} />
               </IconButton>
               <Popper id={id} open={open} anchorEl={anchorEl}>
-                <MenuList sx={{ background: colors.spacecadet[600]}}>
-                    <MenuItem>My Account</MenuItem>
-                    <MenuItem>Awards</MenuItem>
-                    <MenuItem onClick={handleLogOut}>Logout</MenuItem>
+                <MenuList sx={{ background: colors.spacecadet[600] }}>
+                  <MenuItem>My Account</MenuItem>
+                  <MenuItem>Awards</MenuItem>
+                  <MenuItem onClick={handleLogOut}>Logout</MenuItem>
                 </MenuList>
               </Popper>
             </Box>
           </Box>
-        </Toolbar>  
+        </Toolbar>
       </AppBar>
     </Box>
   );

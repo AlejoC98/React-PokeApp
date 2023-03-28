@@ -1,6 +1,8 @@
 import { createContext, useState, useMemo } from "react";
 import { createTheme } from "@mui/material/styles";
-
+import Paper from '@mui/material/Paper';
+import { styled } from '@mui/material/styles';
+import { colors } from "@mui/material";
 // color design tokens export
 export const tokens = (mode) => ({
   ...(mode === "dark"
@@ -257,7 +259,22 @@ export const useMode = () => {
     }),
     []
   );
-
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
   return [theme, colorMode];
 };
+
+export const GridItem = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === 'dark' ? '#191a26' : '#3e4644',
+  fontFamily: ["Source Sans Pro", "sans-serif"].join(","),
+  padding: theme.spacing(1),
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
+}));
+
+// export const GridItem = styled(Paper)(({ theme }) => ({
+//   backgroundColor: theme.palette.mode === 'dark' ? '#191a26' : '#3e4644',
+//   ...theme.typography.body2,
+//   padding: theme.spacing(1),
+//   textAlign: 'center',
+//   color: theme.palette.text.secondary,
+// }));

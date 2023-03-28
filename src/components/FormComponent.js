@@ -29,7 +29,7 @@ const SelectItems = ({ data }) => {
             initialValues.cardset = selected;
         }
 
-        data.map((set, index) => {
+        data.forEach((set, index) => {
             items.push(<MenuItem key={index} value={set.id} onClick={handleSelectChange(set.name)}>{set.name}</MenuItem>);
         });
 
@@ -46,23 +46,6 @@ const SelectItems = ({ data }) => {
             </Select>
         );
     }
-}
-
-const LoadPlayers = (event) => {
-    console.log("Sociooo");
-    try {
-        console.log(event.target.value);
-    } catch (error) {
-        console.log(error);
-    }
-    // var players_number = event.target.value.toString();
-    // if (players_number > 1) {
-    //     var players_inputs = [];
-    //     for (let index = 1; index < players_number; index++) {
-    //         console.log(index);
-    //         players_inputs.push(index);
-    //     }
-    // }
 }
 
 const NewGameForm = () => {
@@ -161,7 +144,6 @@ const NewGameForm = () => {
                                 <MenuItem value="hard" >Hard</MenuItem>
                             </Select>
                         </FormControl>
-                        <LoadPlayers />
                     </Box>
                 </form>
             )}

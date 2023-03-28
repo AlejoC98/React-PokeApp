@@ -1,8 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Lato:wght@700&family=Tilt+Neon&display=swap');
 
-// Then import Bootstrap
-@import "../node_modules/bootstrap/scss/bootstrap";
-
 html,
 body,
 #root,
@@ -11,11 +8,6 @@ body,
     height: 100%;
     width: 100%;
     font-family: 'Tilt Neon', cursive;
-}
-
-.app {
-    display: flex;
-    position: relative;
 }
 
 // Scrollbar Styles
@@ -39,23 +31,20 @@ body,
     background: #555;
 }
 
-.block-container {
-    display: grid;
-    gap: 30px;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-}
+// .block-container {
+//     display: grid;
+//     grid-template-columns: repeat(12, minmax(0, 1fr));
+//     gap: 20px;
+// }
 
-// Containers styles
-.block {
-    display: flex;
-    max-width: 100%;
-    min-height: 100px;
-    padding: 10px 15px;
-    border-radius: 5px;
-    webkit-box-shadow: 3px 8px 29px -11px rgba(17,17,26,1);
-    -moz-box-shadow: 3px 8px 29px -11px rgba(17,17,26,1);
-    box-shadow: 3px 8px 29px -11px rgba(17,17,26,1);
-}
+// // Containers styles
+// .block {
+
+//     background-color: #333;
+//     webkit-box-shadow: 3px 8px 29px -11px rgba(17,17,26,1);
+//     -moz-box-shadow: 3px 8px 29px -11px rgba(17,17,26,1);
+//     box-shadow: 3px 8px 29px -11px rgba(17,17,26,1);
+// }
 
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
@@ -65,4 +54,9 @@ input[type=number]::-webkit-outer-spin-button {
 
 input[type=number] {
     -moz-appearance: textfield;
+}
+
+button.active {
+    background-color: #3e4644 !important;
+    border: 1px solid #3e4644 !important;
 }

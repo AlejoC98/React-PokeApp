@@ -12,13 +12,20 @@ const AppLayaout = () => {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <div className="app">
+        <div className="app" style={{ display: 'flex', alignItems: 'center'}}>
           <LeftBar/>
-          <main className="content">
+          <main 
+            className="content" 
+            style={{ 
+              position: 'relative', 
+              left: 100, 
+              width: 'calc(100% - 100px)',
+              top: 64,
+              padding: '20px 10px'
+            }}
+          >
             <TopBar />
-            <Box className="container-fluid" paddingLeft={4} paddingRight={3} paddingTop={3}>
-              <Outlet />
-            </Box>
+            <Outlet />
           </main>
         </div>
       </ThemeProvider>

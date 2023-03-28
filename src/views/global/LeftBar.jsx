@@ -37,7 +37,14 @@ const LeftBar = () => {
   const [selected, setSelected] = useState("Dashboard");
 
   return (
-    <Box display="fixed" width={75} left={10} position="relative" borderRadius={2} zIndex={1000} height="97%" backgroundColor={theme.palette.mode === 'dark' ? colors.spacecadet[600] : colors.spacecadet[500]} m="auto">
+    <Box 
+      width={75}
+      left={10} 
+      position="fixed" 
+      borderRadius={2}
+      height="97%" 
+      backgroundColor={theme.palette.mode === 'dark' ? colors.spacecadet[600] : colors.spacecadet[500]}
+    >
       <List sx={{ display: "inline-flex", flexDirection: "column"}}>
         <ListItem sx={{ padding: 0, display: 'flex', justifyContent: 'center', width: '100%', marginBottom: 3, marginTop: 2}}>
           <ListItemAvatar sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -53,7 +60,7 @@ const LeftBar = () => {
         />
         <Item
           title="Game"
-          to="/Game"
+          to="/CardSet"
           icon={<VideogameAssetIcon />}
           selected={selected}
           setSelected={setSelected}
