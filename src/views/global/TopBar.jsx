@@ -85,7 +85,17 @@ const Topbar = () => {
     <Box 
       backgroundColor={theme.palette.mode === 'dark' ? colors.spacecadet[600] : '#fcfcfc'}
     >
-      <AppBar position="fixed" sx={{ left: 100, width: 'calc(100% - 100px)', background: "transparent", boxShadow: "none"}}>
+      <AppBar position="fixed" sx={{ left: {
+        xs: 0,
+        sm: 0,
+        md: 100,
+        lg: 100
+      }, width: {
+        xs: '100%',
+        sm: '100%',
+        md: 'calc(100% - 100px)',
+        lg: 'calc(100% - 100px)'
+      }, background: "transparent", boxShadow: "none"}}>
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Search>
             <SearchIconWrapper>

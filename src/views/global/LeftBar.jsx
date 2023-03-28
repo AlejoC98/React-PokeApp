@@ -44,6 +44,10 @@ const LeftBar = () => {
       borderRadius={2}
       height="97%" 
       backgroundColor={theme.palette.mode === 'dark' ? colors.spacecadet[600] : colors.spacecadet[500]}
+      sx={{ display: {
+        xs: 'none', 
+        sm: 'none'
+      }}}
     >
       <List sx={{ display: "inline-flex", flexDirection: "column"}}>
         <ListItem sx={{ padding: 0, display: 'flex', justifyContent: 'center', width: '100%', marginBottom: 3, marginTop: 2}}>

@@ -8,7 +8,7 @@ const initialValues = {
     players: '1',
     rounds: '',
     matches: '',
-    cardset: '',
+    cardset: [],
     level: 'easy'
 }
 
@@ -39,9 +39,9 @@ const SelectItems = ({ data }) => {
                 id='cardset'
                 value={initialValues.cardset}
                 label='Card Sets'
-                placeholder="Select Card Set"
                 variant='outlined'
             >
+                <MenuItem>Select A Card Set</MenuItem>
                 { items }
             </Select>
         );
