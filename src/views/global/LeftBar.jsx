@@ -46,7 +46,9 @@ const LeftBar = () => {
       backgroundColor={theme.palette.mode === 'dark' ? colors.spacecadet[600] : colors.spacecadet[500]}
       sx={{ display: {
         xs: 'none', 
-        sm: 'none'
+        sm: 'none',
+        md: 'flex',
+        lg: 'flex'
       }}}
     >
       <List sx={{ display: "inline-flex", flexDirection: "column"}}>

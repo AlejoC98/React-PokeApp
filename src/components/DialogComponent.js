@@ -1,7 +1,7 @@
 // import { lazy } from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Box, useTheme } from '@mui/material'
 import { tokens } from '../theme';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { NewGameForm } from './FormComponent';
 
@@ -11,7 +11,7 @@ const DialogComponent = ({ title, buttonText, innerModule }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   
-  // const content = lazy(() => import('./NGFComponent'));
+  const currentForm = useRef();
 
   const handleClose = () => {
     setOpen(false);
@@ -19,6 +19,12 @@ const DialogComponent = ({ title, buttonText, innerModule }) => {
 
   const handleOpen = () => {
     setOpen(true)
+  }
+
+  const handleSubmit = () => {
+    if (currentForm.current) {
+      currentForm.current.handleSubmit();
+    }
   }
 
   return (
@@ -39,15 +45,15 @@ const DialogComponent = ({ title, buttonText, innerModule }) => {
           }
         }}
       >
-        <DialogTitle sx={{ fontSize: 35}}>
-          {title}
+        <DialogTitle>
+          { title }
         </DialogTitle>
         <DialogContent>
-          <NewGameForm />
+          <NewGameForm form={currentForm} />
         </DialogContent>
         <DialogActions sx={{ display: 'flex', justifyContent: 'space-between'}}>
             <Button variant='contained' color='secondary' sx={{ color: '#ffffff'}} onClick={handleClose}>Close</Button>
-            <Button variant='contained' color='warning' sx={{ color: '#ffffff'}}>{buttonText}</Button>
+            <Button onClick={handleSubmit} variant='contained' color='warning' sx={{ color: '#ffffff'}}>{buttonText}</Button>
         </DialogActions>
       </Dialog>
     </Box>

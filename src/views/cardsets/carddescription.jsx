@@ -10,7 +10,6 @@ import { useParams } from 'react-router-dom';
 // import TableRow from '@mui/material/TableRow';
 import { GridItem } from '../../theme';
 import { GetCard } from '../../context/PokemonContext';
-import { width } from '@mui/system';
 
 const CardDescription = () => {
     const { card } = useParams();
