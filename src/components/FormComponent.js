@@ -160,6 +160,19 @@ const NewGameForm = ({ form }) => {
                                 <MenuItem value='hard'>Hard</MenuItem>
                             </Select>
                         </FormControl>
+                        <TextField
+                                fullWidth
+                                key={`player-1`}
+                                type='text'
+                                label={`Player 1`}
+                                value={values.level}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                name={`player-1`}
+                                sx={{
+                                    gridColumn: values.playersList.length > 1 ? 'span 2' : 'span 4'
+                                }}
+                            />
                     </Box>
                     <Box mt={2} textAlign='center' display="grid" 
                         gap="30px"
@@ -168,27 +181,20 @@ const NewGameForm = ({ form }) => {
                             "& > div": { gridColumn: isNonMobile ? undefined : "span 4"}
                         }}>
                         <Typography variant='h2' sx={{ gridColumn: 'span 4'}}>Players:</Typography>
-                        { values.playersList.map((player, i) => {
-                            const playerError = errors.playersList?.length && errors.playersList[i] || {};
-                            const playerTouched = touched.playersList?.length && touched.playersList[i] || {};
-                            return (
-                                <TextField
-                                    fullWidth
-                                    key={`player-${i}`}
-                                    type='text'
-                                    label={`Player ${i + 1}`}
-                                    
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    error={playerTouched.name}
-                                    helperText={playerError.name}
-                                    name={`player-${i}`}
-                                    sx={{
-                                        gridColumn: values.playersList.length > 1 ? 'span 2' : 'span 4'
-                                    }}
-                                />
-                            )
-                        }) }
+                        {/* { values.playersList.map((player, i) => (
+                            <TextField
+                                fullWidth
+                                key={`player-${i}`}
+                                type='text'
+                                label={`Player ${i + 1}`}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                name={`player-${i}`}
+                                sx={{
+                                    gridColumn: values.playersList.length > 1 ? 'span 2' : 'span 4'
+                                }}
+                            />
+                        )) } */}
                     </Box>
                 </form>
             )}
