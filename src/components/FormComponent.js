@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Formik } from 'formik'
 import * as yup from 'yup'
 import { Box, Select, TextField, useMediaQuery, FormControl, InputLabel, MenuItem, Typography } from '@mui/material'
@@ -6,6 +6,7 @@ import { GetCardSet } from '../context/PokemonContext'
 
 const initialValues = {
     players: '',
+    playersList: [],
     rounds: '',
     matches: '',
     cardset: '',
@@ -14,6 +15,11 @@ const initialValues = {
 
 const newGameSchema = yup.object().shape({
     players: yup.string().required('This field is required'),
+    playersList: yup.array().of(
+        yup.object().shape({
+            name: yup.string().required('Player name is required')
+        })
+    ),
     rounds: yup.string().required('This field is required'),
     matches: yup.string().required('This field is required'),
     cardset: yup.string().required('This field is required'),
@@ -26,41 +32,22 @@ const NewGameForm = ({ form }) => {
 
     const [cardSet, setCardSet] = useState([]);
 
-    const [numberPlayers, setNumberPlayers] = useState();
-
-    const playersList = useRef({});
-
     const handleSubmit = (values) => {
         console.log(values);
     }
 
-    const handlePlayerNumber = (e) => {
-        setNumberPlayers(e.target.value);
-    }
-    
-    const InputFields = ({ counter }) => {
-        let response = [];
-        if (counter !== undefined && counter !== 0) {
-            for (let index = 0; index < counter; index++) {
-                response.push(
-                    <TextField 
-                        fullWidth
-                        type='text'
-                        label={`Player ${index + 1}`}
-                        name={`player-${index}`}
-                        key={index}
-                        ref={playersList[`player-${index}`]}
-                        required
-                        helperText='This field is required!'
-                        sx={{
-                            gridColumn: 'span 4'
-                        }}
-                    />
-                );
-            }
 
-            return response;
+    function hanldePlayers(e, values, setValues) {
+        const playersList = [];
+        const numberOfPlayers = e.target.value || 0;
+        
+        for (let index = 0; index < numberOfPlayers; index++) {
+            playersList.push({name: ''});
         }
+
+        setValues({...values, playersList});
+
+        console.log(initialValues);
     }
 
     useEffect(() => {
@@ -77,7 +64,7 @@ const NewGameForm = ({ form }) => {
             validationSchema={newGameSchema}
             innerRef={form}
         >
-            {({ values, errors, touched, handleBlur, handleChange, handleSubmit}) => (
+            {({ values, errors, touched, setValues, handleBlur, handleChange, handleSubmit}) => (
                 <form onSubmit={handleSubmit} id='new-game'>
                     <Box
                         display="grid" 
@@ -87,23 +74,28 @@ const NewGameForm = ({ form }) => {
                             "& > div": { gridColumn: isNonMobile ? undefined : "span 4"}
                         }}
                     >
-                        <TextField 
-                            fullWidth
-                            type='number'
-                            label='#Players'
-                            onBlur={handleBlur}
-                            onChange={(e) => {
-                                handleChange(e);
-                                handlePlayerNumber(e)
-                            }}
-                            value={values.players}
-                            name='players'
-                            error={!!touched.players && !!errors.players}
-                            helperText={touched.players && errors.players}
-                            sx={{
-                                gridColumn: 'span 2'
-                            }}
-                        />
+                        <FormControl sx={{ gridColumn: 'span 2' }}>
+                            <InputLabel id='player-number-label'>#Players</InputLabel>
+                            <Select
+                                fullWidth
+                                labelId='player-number-label'
+                                id='players'
+                                label="#Players"
+                                onBlur={handleBlur}
+                                onChange={ (e) => {
+                                        hanldePlayers(e, values, setValues);
+                                        handleChange(e);
+                                    }
+                                }
+                                value={values.players}
+                                name='players'
+                                error={!!touched.players && !!errors.players}
+                            >
+                                { [1,2,3,4,5,6,7,8,9,10].map(i => 
+                                    <MenuItem key={i} value={i}>{i}</MenuItem>    
+                                ) }
+                            </Select>
+                        </FormControl>
                         <TextField 
                             fullWidth
                             type='number'
@@ -168,8 +160,35 @@ const NewGameForm = ({ form }) => {
                                 <MenuItem value='hard'>Hard</MenuItem>
                             </Select>
                         </FormControl>
-                        <Typography variant='h2' sx={{ display: numberPlayers >= 1 ? 'flex' : 'none'}}>Players:</Typography>
-                        <InputFields counter={numberPlayers} />
+                    </Box>
+                    <Box mt={2} textAlign='center' display="grid" 
+                        gap="30px"
+                        gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                        sx={{
+                            "& > div": { gridColumn: isNonMobile ? undefined : "span 4"}
+                        }}>
+                        <Typography variant='h2' sx={{ gridColumn: 'span 4'}}>Players:</Typography>
+                        { values.playersList.map((player, i) => {
+                            const playerError = errors.playersList?.length && errors.playersList[i] || {};
+                            const playerTouched = touched.playersList?.length && touched.playersList[i] || {};
+                            return (
+                                <TextField
+                                    fullWidth
+                                    key={`player-${i}`}
+                                    type='text'
+                                    label={`Player ${i + 1}`}
+                                    
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    error={playerTouched.name}
+                                    helperText={playerError.name}
+                                    name={`player-${i}`}
+                                    sx={{
+                                        gridColumn: values.playersList.length > 1 ? 'span 2' : 'span 4'
+                                    }}
+                                />
+                            )
+                        }) }
                     </Box>
                 </form>
             )}

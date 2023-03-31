@@ -38,7 +38,7 @@ const LeftBar = () => {
 
   return (
     <Box 
-      width={75}
+      width={69}
       left={10} 
       position="fixed" 
       borderRadius={2}
