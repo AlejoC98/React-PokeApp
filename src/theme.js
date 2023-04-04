@@ -266,8 +266,7 @@ export const useMode = () => {
 export const GridItem = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#191a26' : '#3e4644',
   fontFamily: ["Source Sans Pro", "sans-serif"].join(","),
-  padding: theme.spacing(1),
-  textAlign: 'center',
+  padding: theme.spacing(2),
   color: theme.palette.text.secondary,
 }));
 

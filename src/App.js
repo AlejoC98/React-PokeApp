@@ -6,6 +6,7 @@ import Recovery from "./views/auth/Recovery";
 import CardSet from "./views/cardsets";
 import SetDescription from "./views/cardsets/setdescription";
 import CardDescription from "./views/cardsets/carddescription";
+import Game from "./views/game";
 import { AuthLayout, AppLayaout } from "./views/global/Layaout";
 import { AuthContextProvider } from "./context/AuthContext";
 import { ProtectedRoute, ProtectedLoggedRoute } from './components/ProtectedRoute';
@@ -24,6 +25,7 @@ function App() {
           <Route path="/CardSet" element={<CardSet />} />
           <Route path="/CardSet/:set" element={<SetDescription />} />
           <Route path="/CardSet/:set/:card" element={<CardDescription />} />
+          <Route path="/Game" element={<Game />} />
         </Route>
         <Route path="/" element={
           <ProtectedLoggedRoute>

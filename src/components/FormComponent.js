@@ -1,14 +1,15 @@
+import { Box, Select, TextField, useMediaQuery, FormControl, InputLabel, MenuItem, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { Formik } from 'formik'
 import * as yup from 'yup'
-import { Box, Select, TextField, useMediaQuery, FormControl, InputLabel, MenuItem, Typography } from '@mui/material'
 import { GetCardSet } from '../context/PokemonContext'
+import { useNavigate } from 'react-router-dom'
 
 const initialValues = {
     players: '',
     playersList: [],
-    rounds: '',
-    matches: '',
+    rounds: 1,
+    matches: 1,
     cardset: '',
     level: ''
 }
@@ -17,23 +18,26 @@ const newGameSchema = yup.object().shape({
     players: yup.string().required('This field is required'),
     playersList: yup.array().of(
         yup.object().shape({
-            name: yup.string().required('Player name is required')
+            name: yup.string().required('This field is required')
         })
     ),
-    rounds: yup.string().required('This field is required'),
-    matches: yup.string().required('This field is required'),
+    rounds: yup.number().required('This field is required').min(1, 'At least 1 round!').max(10, "Don't use more that 10!"),
+    matches: yup.number().required('This field is required').min(1, 'At least 1 matche!').max(10, "Don't use more that 10!"),
     cardset: yup.string().required('This field is required'),
     level: yup.string().required('This field is required')
 });
 
-const NewGameForm = ({ form }) => {
+const NewGameForm = ({ form, handleClose }) => {
 
     const isNonMobile = useMediaQuery("(min-width:600px)");
 
     const [cardSet, setCardSet] = useState([]);
 
+    const Navigate = useNavigate();
+
     const handleSubmit = (values) => {
-        console.log(values);
+        handleClose();
+        Navigate('/Game', {state : { data: values}});
     }
 
 
@@ -46,8 +50,6 @@ const NewGameForm = ({ form }) => {
         }
 
         setValues({...values, playersList});
-
-        console.log(initialValues);
     }
 
     useEffect(() => {
@@ -104,6 +106,7 @@ const NewGameForm = ({ form }) => {
                             onChange={handleChange}
                             value={values.rounds}
                             name='rounds'
+                            InputProps={{ inputProps: {min: 1, max: 10 }}}
                             error={!!touched.rounds && !!errors.rounds}
                             helperText={touched.rounds && errors.rounds}
                             sx={{
@@ -114,6 +117,7 @@ const NewGameForm = ({ form }) => {
                             fullWidth
                             type='number'
                             label='#Matches'
+                            InputProps={{ inputProps: {min: 1, max: 10 }}}
                             onBlur={handleBlur}
                             onChange={handleChange}
                             value={values.matches}
@@ -155,46 +159,39 @@ const NewGameForm = ({ form }) => {
                                 name='level'
                                 error={!!touched.level && !!errors.level}                               
                             >
-                                <MenuItem value='easy'>Easy</MenuItem>
-                                <MenuItem value='medium'>Medium</MenuItem>
-                                <MenuItem value='hard'>Hard</MenuItem>
+                                <MenuItem value={10}>Easy</MenuItem>
+                                <MenuItem value={20}>Medium</MenuItem>
+                                <MenuItem value={40}>Hard</MenuItem>
                             </Select>
-                        </FormControl>
-                        <TextField
-                                fullWidth
-                                key={`player-1`}
-                                type='text'
-                                label={`Player 1`}
-                                value={values.level}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                name={`player-1`}
-                                sx={{
-                                    gridColumn: values.playersList.length > 1 ? 'span 2' : 'span 4'
-                                }}
-                            />
+                        </FormControl>                       
                     </Box>
-                    <Box mt={2} textAlign='center' display="grid" 
+                    <Box mt={2} textAlign='center' display={values.playersList.length > 0 ? 'grid' : 'none'}
                         gap="30px"
                         gridTemplateColumns="repeat(4, minmax(0, 1fr))"
                         sx={{
                             "& > div": { gridColumn: isNonMobile ? undefined : "span 4"}
                         }}>
                         <Typography variant='h2' sx={{ gridColumn: 'span 4'}}>Players:</Typography>
-                        {/* { values.playersList.map((player, i) => (
-                            <TextField
-                                fullWidth
-                                key={`player-${i}`}
-                                type='text'
-                                label={`Player ${i + 1}`}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                name={`player-${i}`}
-                                sx={{
-                                    gridColumn: values.playersList.length > 1 ? 'span 2' : 'span 4'
-                                }}
-                            />
-                        )) } */}
+                        {/* { Object.keys(errors).includes('playersList') } */}
+                        { values.playersList.length > 0 &&
+                            values.playersList.map((player, i) => (
+                                <TextField
+                                    fullWidth
+                                    key={`player-${i}`}
+                                    type='text'
+                                    label={`Player ${i + 1}`}
+                                    onBlur={handleBlur}
+                                    onChange={handleChange}
+                                    value={player.name}
+                                    name={`playersList.${i}.name`}
+                                    error={errors.playersList ? (!!touched.playersList && !!errors.playersList[i].name) : false}
+                                    helperText={errors.playersList ? (touched.playersList && errors.playersList[i].name) : ''}
+                                    sx={{
+                                        gridColumn: values.playersList.length > 1 ? 'span 2' : 'span 4'
+                                    }}
+                                />
+                            ))
+                        }
                     </Box>
                 </form>
             )}

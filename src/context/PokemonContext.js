@@ -25,4 +25,31 @@ const GetCard = async(card) => {
     })
 }
 
-export { GetCardSet, GetCard }
+const SetUpGame = async(set, level, matches) => {
+    return await GetCardSet('filter_id', { id : set}).then((res) => {
+        let response = [];
+        let matchesStatus = 0;
+        for (let index = 0; index < level - matches; index++) {
+            let card = res.content[Math.floor(Math.random() * res.content.length)];
+
+            if (!response.find(c => c.id === card.name)) {
+                response.push(card);
+            }
+
+        }
+
+        while (matchesStatus < matches) {
+            let Matchcard = response[Math.floor(Math.random() * response.length)];
+
+            if (response.filter(x => x.id === Matchcard.id).length <= 1) {
+                response.push(Matchcard);
+                matchesStatus++;
+            }
+        }
+
+        return response;
+
+    })
+}
+
+export { GetCardSet, GetCard, SetUpGame}

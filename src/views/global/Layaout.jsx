@@ -1,5 +1,5 @@
 import { ColorModeContext, tokens, useMode } from '../../theme';
-import { Box, CssBaseline, ThemeProvider, useTheme } from "@mui/material";
+import { Box, CssBaseline, ThemeProvider, useMediaQuery, useTheme } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import TopBar from './TopBar';
 import LeftBar from './LeftBar';
@@ -7,6 +7,7 @@ import LeftBar from './LeftBar';
 const AppLayaout = () => {
 
   const [theme, colorMode] = useMode();
+  const isNonMobile = useMediaQuery("(min-width:900px)");
 
   return (
     <ColorModeContext.Provider value={colorMode}>
@@ -18,7 +19,7 @@ const AppLayaout = () => {
             className="content" 
             style={{ 
               position: 'relative', 
-              left: 100, 
+              left: isNonMobile ? 100 : 50,
               width: 'calc(100% - 100px)',
               top: 64,
               padding: '20px 10px'

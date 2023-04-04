@@ -49,7 +49,7 @@ const DialogComponent = ({ title, buttonText, innerModule }) => {
           { title }
         </DialogTitle>
         <DialogContent>
-          <NewGameForm form={currentForm} />
+          <NewGameForm form={currentForm} handleClose={handleClose} />
         </DialogContent>
         <DialogActions sx={{ display: 'flex', justifyContent: 'space-between'}}>
             <Button variant='contained' color='secondary' sx={{ color: '#ffffff'}} onClick={handleClose}>Close</Button>
