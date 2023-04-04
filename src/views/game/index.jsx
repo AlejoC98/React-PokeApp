@@ -18,22 +18,26 @@ const Game = () => {
 
     const location = useLocation();
 
+    const gameData = location.state.data;
+
     const [cards, setCards] = useState([]);
+
+    const [currentTurn, setCurrentTurn] = useState(gameData.playersList[0].name);
+
+    const [matchesFound, setMatchesFound] = useState([]);
 
     // Setting up game once got data
     useEffect(() => {
-        SetUpGame(location.state.data.cardset, location.state.data.level, location.state.data.matches).then((res) => {
+        SetUpGame(gameData.cardset, gameData.level, gameData.matches).then((res) => {
             setCards(res);
         });
-    }, [location]);
+    }, [gameData]);
 
     const CardElements = () => {
         
         let cardsResponse = [];
 
         const [flip, setFlip] = useState([]);
-
-        const [matchesFound, setMatchesFound] = useState([]);
         
         function handleClick(props) {
             if (flip.length < 2)
@@ -44,10 +48,11 @@ const Game = () => {
             if (flip.length === 2) {
                 if (flip.every((val, i, arr) => arr.filter(mc => mc.id === val.id).length === 2)) {
                     setMatchesFound(m => [...m, flip[0]]);
-                    alert("Winner");
                 }
                 setTimeout(() => {
                     setFlip([]);
+                    let currentPlayerIndex = gameData.playersList.indexOf(gameData.playersList.find(p => p.name === currentTurn));
+                    (currentPlayerIndex < gameData.playersList.length -1) ? setCurrentTurn(gameData.playersList[currentPlayerIndex + 1].name) : setCurrentTurn(gameData.playersList[0].name);
                 }, 1000);
             }
 
@@ -57,7 +62,7 @@ const Game = () => {
             cardsResponse.push(
                 <Grid item key={`card-${index}`} onClick={() => handleClick({key: `card-${index}`, id: element.id})}>
                     <PlainGridItem sx={{ height: { xs: 80, sm: 80, md: 140}, width: { xs: 58, sm: 58, md: 100} }} className='CardContainer'>
-                       <Box className='PokeCard' sx={ flip.find(c => c.key === `card-${index}`) ? { transform: 'rotateY(180deg)' } : matchesFound.find(mf => mf.id === element.id) ? { transform: 'rotateY(180deg)' } : {}} id={element.id}>
+                       <Box className='PokeCard' sx={ flip.find(c => c.key === `card-${index}`) ? { transform: 'rotateY(180deg)' } : matchesFound.find(mf => mf.id === element.id) ? { transform: 'rotateY(180deg)' } : { transform: 'rotateY(0deg)' }} id={element.id}>
                             <Box className='found' sx={ matchesFound.find(mf => mf.id === element.id) ? { display: 'flex'} : { display: 'none' } }></Box>
                             <Box className='front'>
                                 <img src={pokecard} alt="poce" style={{ width: '100%', height: '100%'}} />
@@ -83,14 +88,14 @@ const Game = () => {
                             <Grid item xs={12} md={3}>
                                 <PlainGridItem>
                                     <Typography variant='h4' color='danger'>
-                                        Username
+                                        { currentTurn }
                                     </Typography>
                                 </PlainGridItem>
                             </Grid>
                             <Grid item xs={12} md={3}>
                                 <PlainGridItem>
                                     <Typography variant='h4' color='danger'>
-                                        Matches: 0 / 0
+                                        { `Matches ${matchesFound.length} / ${gameData.matches}` }
                                     </Typography>
                                 </PlainGridItem>
                             </Grid>

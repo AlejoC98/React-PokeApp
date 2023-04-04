@@ -174,23 +174,24 @@ const NewGameForm = ({ form, handleClose }) => {
                         <Typography variant='h2' sx={{ gridColumn: 'span 4'}}>Players:</Typography>
                         {/* { Object.keys(errors).includes('playersList') } */}
                         { values.playersList.length > 0 &&
-                            values.playersList.map((player, i) => (
-                                <TextField
-                                    fullWidth
-                                    key={`player-${i}`}
-                                    type='text'
-                                    label={`Player ${i + 1}`}
-                                    onBlur={handleBlur}
-                                    onChange={handleChange}
-                                    value={player.name}
-                                    name={`playersList.${i}.name`}
-                                    error={errors.playersList ? (!!touched.playersList && !!errors.playersList[i].name) : false}
-                                    helperText={errors.playersList ? (touched.playersList && errors.playersList[i].name) : ''}
-                                    sx={{
-                                        gridColumn: values.playersList.length > 1 ? 'span 2' : 'span 4'
-                                    }}
-                                />
-                            ))
+                            values.playersList.map((player, i) => {
+                                return (
+                                    <TextField
+                                        fullWidth
+                                        key={`player-${i}`}
+                                        type='text'
+                                        label={`Player ${i + 1}`}
+                                        onBlur={handleBlur}
+                                        onChange={handleChange}
+                                        value={player.name}
+                                        name={`playersList.${i}.name`}
+                                        sx={{
+                                            gridColumn: values.playersList.length > 1 ? 'span 2' : 'span 4'
+                                        }}
+                                    />
+                                )
+
+                            })
                         }
                     </Box>
                 </form>
