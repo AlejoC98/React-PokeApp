@@ -81,3 +81,11 @@ button.active {
     width: 100%;
     background-color: red;
 }
+
+.board {
+    background-image: url('./static/images/game_background.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center bottom;
+    padding: 1.5rem;
+}
