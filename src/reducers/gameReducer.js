@@ -1,14 +1,18 @@
 
-const gameReducer = (state, action) => {
+const initialValues = {
+    cards: []
+}
+
+const gameReducer = async(state, action) => {
     switch (action.type) {
         case "GET_CARDS":
             return {
                 ...state,
-                cards: ['socio', 'perro']
+                cards: ['socio', 'que', 'ledije']
             }
         default:
             throw Error('Unknown action: ' + action.type);
     }
 }
 
-export default gameReducer
+export { gameReducer, initialValues }
