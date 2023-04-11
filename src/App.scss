@@ -54,6 +54,7 @@ button.active {
     background-size: cover;
     background-position: center bottom;
     padding: 1.5rem;
+    position: relative;
 }
 
 // ********* FLIP CARD STYLES ************* //
@@ -98,4 +99,16 @@ button.active {
 
 .PokeCard.active {
     transform: rotateY(180deg);
+}
+
+.end-game-view {
+    position: absolute;
+    background-color: rgba(241, 129, 34, 0.4);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    top: 0;
+    left: 0;
 }

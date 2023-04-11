@@ -16,7 +16,7 @@ const CardsElements = ({ card, active, found }) => {
 
   // console.log(card);
 
-  console.log(found)
+  // console.log(found);
 
   return (
     <PlainGridItem className='animate__animated animate__flipInX'>
@@ -25,7 +25,7 @@ const CardsElements = ({ card, active, found }) => {
         height: { xs: 80, sm: 80, md: 124.73},
       }}>
         {/* <Box className={found ? 'found' : 'none'}></Box> */}
-        <Box className={active ? 'PokeCard active' : 'PokeCard'} >
+        <Box className={active || found ? 'PokeCard active' : 'PokeCard'} >
           <Box className='front'>
             <img src={pokecard} alt="Avatar" style={{ width: '100%', height: '100%'}}/>
           </Box>
