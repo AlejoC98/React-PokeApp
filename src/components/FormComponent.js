@@ -2,7 +2,7 @@ import { Box, Select, TextField, useMediaQuery, FormControl, InputLabel, MenuIte
 import React, { useEffect, useState } from 'react'
 import { Formik } from 'formik'
 import * as yup from 'yup'
-import { GetCardSet } from '../context/PokemonContext'
+import { GetCardSet, SetUpGame } from '../context/PokemonContext'
 import { useNavigate } from 'react-router-dom'
 
 const initialValues = {
@@ -37,7 +37,11 @@ const NewGameForm = ({ form, handleClose }) => {
 
     const handleSubmit = (values) => {
         handleClose();
-        Navigate('/Game', {state : { data: values}});
+        SetUpGame(values.cardset, values.level, values.matches).then((res) => {
+            Navigate('/Game', {state : { data: values, cards: res}});
+        }).catch((err) => {
+            console.log(err);
+        })
     }
 
 
