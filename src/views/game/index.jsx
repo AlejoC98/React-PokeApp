@@ -20,6 +20,7 @@ function reducer(state, action) {
             // current_player['matches'] = action.matches.length / 2;
             // current_player['matches'] = ('matches' in current_player) ? current_player['matches'] += 1 : 1;
             current_player['matches'] = (state.flipped.length > 1) ? state.flipped.length / 2 : current_player['matches'];
+            action.matches = [...new Set(action.matches)];
             // current_player['matches'] += 1;
             return {
                 ...state,
@@ -45,8 +46,7 @@ function reducer(state, action) {
             }
             if (response.round < state.rounds) {
                 response.round += 1;
-            }
-            else {
+            } else {
                 let max_matches;
                 for (let player of state.playersList) {
                     max_matches = (max_matches === undefined) ? player : (player.matches > max_matches.matches) ? player : (player.matches === max_matches.matches) ? [...max_matches, player] : max_matches;
@@ -110,7 +110,11 @@ const Game = () => {
                 <Grid item md={12}>
                     <GridItem>
                         <Box className='board'>
-                            {/* <Box className='end-game-view'></Box> */}
+                            {/* <Box className={state.matches === state.found_matches ? 'end-game-view' : ''}> */}
+                            <Box className={state.winner.length > 1 ? 'end-game-view' : 'none'} display='flex' justifyContent='center' alignItems='center'>
+                                <Typography variant='h2'>Sociooo</Typography>
+                                <Typography variant='h2'>{ state.winner }</Typography>
+                            </Box>
                             <Grid container spacing={2} alignItems='center'>
                                 <Grid item md={3}>
                                     <PlainGridItem>
@@ -129,7 +133,7 @@ const Game = () => {
                                 </Grid>
                                 <Grid item md={3}>
                                     <PlainGridItem>
-                                        <Button color="danger" variant="contained">Exit</Button>
+                                        <Button variant="contained">Exit</Button>
                                     </PlainGridItem>
                                 </Grid>
                             </Grid>

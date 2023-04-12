@@ -203,13 +203,22 @@ export const themeSettings = (mode) => {
             secondary: {
               main: colors.caribbean[500],
             },
+            danger: {
+              main: colors.poppy[500]
+            },
+            warning: {
+              main: colors.orange[500],
+            },
             neutral: {
               dark: colors.orange[700],
               main: colors.orange[500],
               light: colors.orange[100],
             },
+            text: {
+              primary: '#fcfcfc'
+            },
             background: {
-              default: "#fcfcfc",
+              default: colors.gray[800],
             },
           }),
     },
@@ -264,10 +273,10 @@ export const useMode = () => {
 };
 
 export const GridItem = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#191a26' : '#3e4644',
+  backgroundColor: theme.palette.mode === 'dark' ? '#191a26' : '#555566',
   fontFamily: ["Source Sans Pro", "sans-serif"].join(","),
   padding: theme.spacing(2),
-  color: theme.palette.text.secondary,
+  color: theme.palette.mode === 'dark' ? theme.palette.text.secondary : '#ffffff',
 }));
 
 // export const GridItem = styled(Paper)(({ theme }) => ({

@@ -20,12 +20,13 @@ const CardsElements = ({ card, active, found }) => {
 
   return (
     <PlainGridItem className='animate__animated animate__flipInX'>
-      <Box className='CardContainer' sx={{ 
+      <Box className={found ? 'CardContainer beating' : 'CardContainer'} sx={{ 
         width: { xs: 58, sm: 58, md: 90}, 
         height: { xs: 80, sm: 80, md: 124.73},
       }}>
         {/* <Box className={found ? 'found' : 'none'}></Box> */}
-        <Box className={active || found ? 'PokeCard active' : 'PokeCard'} >
+        {/* <Box className={active || found ? 'PokeCard active' : 'PokeCard'} > */}
+        <Box className={active ? 'PokeCard active' : found ? 'PokeCard found' : 'PokeCard'} >
           <Box className='front'>
             <img src={pokecard} alt="Avatar" style={{ width: '100%', height: '100%'}}/>
           </Box>

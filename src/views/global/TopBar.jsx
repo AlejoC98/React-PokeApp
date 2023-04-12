@@ -80,14 +80,12 @@ const Topbar = () => {
   };
 
   return (
-    <Box 
-      backgroundColor={theme.palette.mode === 'dark' ? colors.spacecadet[600] : '#fcfcfc'}
-    >
+    <Box>
       <AppBar position="fixed" sx={
           { 
             left: { xs: 0, sm: 0, md: 80}, 
-            width: { xs: '100%', sm: '100%', md: 'calc(100% - 100px)'}, 
-            background: colors.spacecadet[500], 
+            width: { xs: '100%', sm: '100%', md: 'calc(100% - 80px)'}, 
+            background: theme.palette.mode === 'dark' ? colors.spacecadet[500] : colors.gray[800], 
             boxShadow: "none"
           }
         }>
