@@ -55,6 +55,7 @@ button.active {
     background-position: center bottom;
     padding: 1.5rem;
     position: relative;
+    min-height: 85vh;
 }
 
 // ********* FLIP CARD STYLES ************* //
@@ -111,6 +112,10 @@ button.active {
     z-index: 1;
     top: 0;
     left: 0;
+}
+
+.none { 
+    display: none;
 }
 
 @keyframes beat {

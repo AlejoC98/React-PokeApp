@@ -3,29 +3,30 @@ import { Box, Button, Grid, Typography } from "@mui/material";
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import { GridItem } from "../../theme";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import CardsElements from "../../components/CardsElements";
+import { SetUpGame } from '../../context/PokemonContext';
 
 function reducer(state, action) {
     switch (action.type) {
         case 'flip_card':
-            let res = (state.flipped.length > 1 ) ? [] : (action.ele !== undefined) ? [...state.flipped, action.ele] : [...state.flipped];
-            return {
-                ...state,
-                flipped: res
+            if (!state.found.find(f => f.find(g => g.key === action.ele.key))) {
+                let res = (state.flipped.length > 1 ) ? [] : (action.ele !== undefined) ? [...state.flipped, action.ele] : [...state.flipped];
+                return {
+                    ...state,
+                    flipped: res
+                }
             }
+            break;
         case 'found_matches':
             let current_player = state.playersList.find(p => p.name === state.playersList[state.turn].name);
-            // let player_pos = state.playersList.indexOf(current_player);
-            // current_player['matches'] = action.matches.length / 2;
-            // current_player['matches'] = ('matches' in current_player) ? current_player['matches'] += 1 : 1;
-            current_player['matches'] = (state.flipped.length > 1) ? state.flipped.length / 2 : current_player['matches'];
-            action.matches = [...new Set(action.matches)];
-            // current_player['matches'] += 1;
+
+            current_player['matches'] = ('matches' in current_player) ? current_player['matches'] + action.found : action.found;
+
+            state.found.push(state.flipped);
+
             return {
                 ...state,
-                found: [...state.found, ...action.matches],
-                found_matches: action.matches.length / 2,
                 flipped: []
             }
         case 'next_turn':
@@ -42,21 +43,38 @@ function reducer(state, action) {
             }
         case 'next_round':
             let response = {
-                round: state.currentRound
-            }
-            if (response.round < state.rounds) {
-                response.round += 1;
-            } else {
-                let max_matches;
-                for (let player of state.playersList) {
-                    max_matches = (max_matches === undefined) ? player : (player.matches > max_matches.matches) ? player : (player.matches === max_matches.matches) ? [...max_matches, player] : max_matches;
-                }
-                response['winner'] = max_matches.name;
+                currentRound: state.currentRound,
+                winner: []
             }
             
+            // (response.round < state.rounds) ? response.round + 1 : state.rounds;
+            response.currentRound = (response.currentRound < state.rounds) ? response.currentRound + 1 : 'end';
+            
+            for (let player of state.playersList) {
+                if (response['winner'].length < 1) {
+                    response['winner'].push(player)
+                } else {
+                    response['winner'].forEach((p) => {
+                        if (p.matches < player.matches) {
+                            return [player];
+                        } else if (p.matches === player.matches) {
+                            return [...response['winner'], player];
+                        }
+                    });
+                }
+            }
+
             return {
                 ...state,
                 ...response
+            }
+        case 'new_game':
+            return {
+                ...state,
+                cards: action.data,
+                winner: [],
+                turn: 0,
+                found: []
             }
         default:
             throw Error('Unknown action puto.');
@@ -74,12 +92,13 @@ const Game = () => {
 
     const location = useLocation();
 
+    const Navigate = useNavigate();
+
     const [state, dispatch] = useReducer(reducer, {
         ...location.state.data,
         cards: location.state.cards,
         flipped: [],
         found: [],
-        found_matches: 0,
         turn: 0,
         currentRound: 1,
         winner: []
@@ -88,21 +107,31 @@ const Game = () => {
     useEffect(() => {
         if (state.flipped.length === 2) {
             if (state.flipped[0].id === state.flipped[1].id) {
-                dispatch({type: 'found_matches', matches: [...state.found, state.flipped[0].key, state.flipped[1].key]});
-            } else {
+                dispatch({type: 'found_matches', found: 1});
+            } 
+            else {
                 setTimeout(() => {
                     dispatch({type: 'flip_card'});
+                    setTimeout(() => {
+                        dispatch({type: 'next_turn'});
+                    }, 100);
                 }, 1000);
-                dispatch({type: 'next_turn'});
             }
-        }
-    }, [state.flipped, state.found]);
-
-    useEffect(() => {
-        if (state.matches === state.found_matches) {
+        } else if (state.found.length === state.matches) {
             dispatch({type: 'next_round'});
         }
-    }, [state.found_matches, state.matches]);
+    }, [state.flipped, state.found, state.matches]);
+
+    // Function to start next game
+    async function handleAfterGame() {
+        if (state.currentRound === 'end') {
+            Navigate('/Dashboard');
+        } else {
+            await SetUpGame(state.cardset, state.level, state.matches).then((res) => {
+                dispatch({type: 'new_game', data: res});
+            });
+        }
+    }
 
     return (
         <Box flexGrow={1}>
@@ -111,9 +140,27 @@ const Game = () => {
                     <GridItem>
                         <Box className='board'>
                             {/* <Box className={state.matches === state.found_matches ? 'end-game-view' : ''}> */}
-                            <Box className={state.winner.length > 1 ? 'end-game-view' : 'none'} display='flex' justifyContent='center' alignItems='center'>
-                                <Typography variant='h2'>Sociooo</Typography>
-                                <Typography variant='h2'>{ state.winner }</Typography>
+                            <Box className={state.winner.length >= 1 ? 'end-game-view' : 'none'} display='flex' justifyContent='center' alignItems='center' flexDirection='column'>
+                                {/* <Typography variant='h2'>{ (state.winner.length === 1) ? 'Winner' : 'Tied'}</Typography>
+                                <Typography variant='h2'></Typography> */}
+                                { state.winner.map((p, i) => (
+                                    <Box textAlign='center' key={`payer-data-${i}`}>
+                                        <Typography variant='h1'>{ (state.winner.length === 1 && state.playersList.length > 1) ? 'Winner' : state.playersList.length > 1 ? 'Tied' : 'Well Done'}</Typography>
+                                        <Typography variant='h2'>{p.name}</Typography>
+                                        <Typography variant='h4'>Matches Found {p.matches} out of {state.matches}</Typography>
+                                        <Box mt={3}>
+                                            <Button 
+                                                variant='contained' 
+                                                color={state.currentRound === 'end' ? 'danger' : 'warning'}
+                                                sx={{ color: '#ffffff'}}
+                                                onClick={handleAfterGame}
+                                            >
+                                                { (state.currentRound === 'end') ? 'Exit' : 'Next Round'}
+                                            </Button>
+                                        </Box>
+                                    </Box>
+                                    ))
+                                }
                             </Box>
                             <Grid container spacing={2} alignItems='center'>
                                 <Grid item md={3}>
@@ -123,7 +170,7 @@ const Game = () => {
                                 </Grid>
                                 <Grid item md={3}>
                                     <PlainGridItem>
-                                        <Typography variant="h4">Matches: { state.found_matches } / { state.matches} </Typography>
+                                        <Typography variant="h4">Matches: { state.found.length } / { state.matches} </Typography>
                                     </PlainGridItem>
                                 </Grid>
                                 <Grid item md={3}>
@@ -153,7 +200,12 @@ const Game = () => {
                                                 dispatch({type: 'flip_card', ele: { id: element.id, key: index}})
                                             }
                                         >
-                                            <CardsElements card={element} active={state.flipped.find(c => c.key === index) !== undefined} found={state.found.includes(index)}/>
+                                            <CardsElements 
+                                                card={element} 
+                                                active={state.flipped.find(c => c.key === index) !== undefined} found={
+                                                    state.found.find(f => f.find(g => g.key === index))
+                                                }
+                                            />
                                         </Grid>
                                     )) }
                                 </Grid>
