@@ -2,7 +2,7 @@ import { ListItem, List, useTheme, ListItemIcon, ListItemAvatar, Avatar, MenuIte
 import { Box } from "@mui/material";
 import { tokens } from "../../theme";
 // Icons
-import VideogameAssetIcon from '@mui/icons-material/VideogameAsset';
+// import VideogameAssetIcon from '@mui/icons-material/VideogameAsset';
 import StyleIcon from '@mui/icons-material/Style';
 import GroupIcon from '@mui/icons-material/Group';
 import HomeIcon from '@mui/icons-material/Home';
@@ -64,13 +64,13 @@ const LeftBar = () => {
           selected={selected}
           setSelected={setSelected}
         />
-        <Item
+        {/* <Item
           title="Game"
           to="/CardSet"
           icon={<VideogameAssetIcon />}
           selected={selected}
           setSelected={setSelected}
-        />
+        /> */}
         <Item
           title="Card Set"
           to="/CardSet"
