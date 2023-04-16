@@ -6,18 +6,24 @@ import { GridItem } from "../../theme";
 import { useLocation, useNavigate } from "react-router-dom";
 import CardsElements from "../../components/CardsElements";
 import { SetUpGame } from '../../context/PokemonContext';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 
 function reducer(state, action) {
     switch (action.type) {
         case 'flip_card':
-            if (!state.found.find(f => f.find(g => g.key === action.ele.key))) {
-                let res = (state.flipped.length > 1 ) ? [] : (action.ele !== undefined) ? [...state.flipped, action.ele] : [...state.flipped];
-                return {
-                    ...state,
-                    flipped: res
+            let fli_res = {};
+            if (state.flipped.find(fl => fl.key === action.ele.key) === undefined) {
+                if ( state.found.find(p => p.find(m => m.key === action.ele.key)) === undefined ) {
+                    let res = (state.flipped.length > 1 ) ? [] : (action.ele !== undefined && action.ele.key !== '') ? [...state.flipped, action.ele] : [...state.flipped];
+                    fli_res = {
+                        flipped: res
+                    }
                 }
+            }           
+            return {
+                ...state,
+                ...fli_res
             }
-            break;
         case 'found_matches':
             let current_player = state.playersList.find(p => p.name === state.playersList[state.turn].name);
 
@@ -44,37 +50,69 @@ function reducer(state, action) {
         case 'next_round':
             let response = {
                 currentRound: state.currentRound,
-                winner: []
             }
-            
-            // (response.round < state.rounds) ? response.round + 1 : state.rounds;
-            response.currentRound = (response.currentRound < state.rounds) ? response.currentRound + 1 : 'end';
+
             
             for (let player of state.playersList) {
-                if (response['winner'].length < 1) {
-                    response['winner'].push(player)
+
+                player['matches'] = ('matches' in player) ? player.matches : 0;
+
+                state.results.top = (player.matches > state.results.top) ? player.matches : state.results.top;
+
+                let data_player = state.results.data.find(p => p.name === player.name);
+
+                if (data_player !== undefined ) {
+                    data_player.matches.push(`Round ${state.currentRound}: ${player.matches} out of ${state.matches}`);
+                    data_player.total += player.matches;
                 } else {
-                    response['winner'].forEach((p) => {
-                        if (p.matches < player.matches) {
-                            return [player];
-                        } else if (p.matches === player.matches) {
-                            return [...response['winner'], player];
-                        }
-                    });
+                    let insert = {};
+
+                    insert['matches'] = [`Round ${state.currentRound}: ${player.matches} out of ${state.matches}`]
+                    insert['name'] = player.name
+                    insert['total'] = player.matches;
+                    
+                    state.results.data.push(insert);
                 }
+
             }
+            
+            response.currentRound = (response.currentRound < state.rounds) ? response.currentRound + 1 : 'end';
+
+            // Ordering data by matches found
+            state.results.data.sort((a, b) => {
+                return b.total - a.total;
+            });
+
+            // getting who's closets to total matches available
+            let winner = state.results.data.reduce((a, b) => { return Math.abs(b.total - (state.matches * state.rounds)) < Math.abs(a.total - (state.matches * state.rounds)) ? b : a})
+
+            winner['winner'] = true;
 
             return {
                 ...state,
                 ...response
             }
         case 'new_game':
+
+            let reset_players = [];
+            state.playersList.forEach(element => {
+                reset_players.push({name: element.name});
+            });
+
+            state.results.data.forEach((ele, ind) => {
+                delete ele.winner;
+            });
+
             return {
                 ...state,
                 cards: action.data,
-                winner: [],
                 turn: 0,
-                found: []
+                found: [],
+                playersList: reset_players,
+                results: {
+                    data: state.results.data,
+                    top: 0
+                }
             }
         default:
             throw Error('Unknown action puto.');
@@ -101,7 +139,10 @@ const Game = () => {
         found: [],
         turn: 0,
         currentRound: 1,
-        winner: []
+        results: {
+            top: 0,
+            data: []
+        }
     });
 
     useEffect(() => {
@@ -111,7 +152,7 @@ const Game = () => {
             } 
             else {
                 setTimeout(() => {
-                    dispatch({type: 'flip_card'});
+                    dispatch({type: 'flip_card', ele: {id: '', key: ''}});
                     setTimeout(() => {
                         dispatch({type: 'next_turn'});
                     }, 100);
@@ -139,28 +180,35 @@ const Game = () => {
                 <Grid item md={12}>
                     <GridItem>
                         <Box className='board'>
-                            {/* <Box className={state.matches === state.found_matches ? 'end-game-view' : ''}> */}
-                            <Box className={state.winner.length >= 1 ? 'end-game-view' : 'none'} display='flex' justifyContent='center' alignItems='center' flexDirection='column'>
-                                {/* <Typography variant='h2'>{ (state.winner.length === 1) ? 'Winner' : 'Tied'}</Typography>
-                                <Typography variant='h2'></Typography> */}
-                                { state.winner.map((p, i) => (
-                                    <Box textAlign='center' key={`payer-data-${i}`}>
-                                        <Typography variant='h1'>{ (state.winner.length === 1 && state.playersList.length > 1) ? 'Winner' : state.playersList.length > 1 ? 'Tied' : 'Well Done'}</Typography>
-                                        <Typography variant='h2'>{p.name}</Typography>
-                                        <Typography variant='h4'>Matches Found {p.matches} out of {state.matches}</Typography>
-                                        <Box mt={3}>
-                                            <Button 
-                                                variant='contained' 
-                                                color={state.currentRound === 'end' ? 'danger' : 'warning'}
-                                                sx={{ color: '#ffffff'}}
-                                                onClick={handleAfterGame}
-                                            >
-                                                { (state.currentRound === 'end') ? 'Exit' : 'Next Round'}
-                                            </Button>
+                            <Box className={state.currentRound === 'end' || state.results.top > 0 ? 'end-game-view animate__animated animate__zoomIn' : 'none'} pt={20}>
+                                <Box textAlign='center'>
+                                    <Typography variant='h1' sx={{ fontSize: 80}}>
+                                        { state.currentRound === 'end' ? 'Winner' : 'Well Done' }
+                                    </Typography>
+                                </Box>
+                                <Box display='flex' flexDirection='column' justifyContent='center' alignItems='center'>
+                                    { state.results.data.map((player, ind) => (
+                                        <Box key={`content-${ind}`}>
+                                            <Typography variant='h2' sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                                {player.name} { 'winner' in player ? (<EmojiEventsIcon className='winner-trophy' />) : ''}
+                                            </Typography>
+                                            { player.matches.map((round, i) => (
+                                                <Typography variant='h4' key={`round-${i}`}>{round}</Typography>
+                                            )) }
                                         </Box>
+                                    ))}
+                                </Box>
+                                <Box display='flex' flexDirection='column' justifyContent='center' alignItems='center'>
+                                    <Box mt={4}>
+                                        <Button 
+                                            variant='contained' color={state.currentRound === 'end' ? 'danger' : 'warning'} 
+                                            sx={{ color: '#fff'}}
+                                            onClick={handleAfterGame}
+                                        >
+                                            { (state.currentRound === 'end') ? 'End Game' : 'Next Round'}
+                                        </Button>
                                     </Box>
-                                    ))
-                                }
+                                </Box>
                             </Box>
                             <Grid container spacing={2} alignItems='center'>
                                 <Grid item md={3}>
@@ -180,7 +228,7 @@ const Game = () => {
                                 </Grid>
                                 <Grid item md={3}>
                                     <PlainGridItem>
-                                        <Button variant="contained">Exit</Button>
+                                        <Button variant="contained" onClick={() => Navigate('/Dashboard')}>Exit</Button>
                                     </PlainGridItem>
                                 </Grid>
                             </Grid>
@@ -196,7 +244,7 @@ const Game = () => {
                                                 textAlign: 'center',
                                                 position: 'relative'
                                             }} 
-                                            onClick={() => 
+                                            onClick={() =>
                                                 dispatch({type: 'flip_card', ele: { id: element.id, key: index}})
                                             }
                                         >

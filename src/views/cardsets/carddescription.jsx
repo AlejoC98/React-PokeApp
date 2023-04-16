@@ -1,15 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { Grid, ListItem, ListItemText, Typography } from '@mui/material'
+import { Box, Button, Grid, List, ListItem, ListItemText, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material'
 import { useParams } from 'react-router-dom';
-// import Paper from '@mui/material/Paper';
-// import Table from '@mui/material/Table';
-// import TableBody from '@mui/material/TableBody';
-// import TableCell from '@mui/material/TableCell';
-// import TableContainer from '@mui/material/TableContainer';
-// import TableHead from '@mui/material/TableHead';
-// import TableRow from '@mui/material/TableRow';
 import { GridItem } from '../../theme';
 import { GetCard } from '../../context/PokemonContext';
+import Paper from '@mui/material/Paper';
+import StorefrontIcon from '@mui/icons-material/Storefront';
 
 const CardDescription = () => {
     const { card } = useParams();
@@ -21,51 +16,235 @@ const CardDescription = () => {
         });
     }, [card]);
 
-    console.log(cardData);
-
     if ('name' in cardData) {
+        console.log(cardData);
         return (
-            <Grid container spacing={3}>
-                    <Grid item xs={12} sm={12} md={3} lg={3}>
-                        <GridItem>
-                            <Typography sx={{ fontSize: { sm: 'h1'}}}>#{cardData.nationalPokedexNumbers} - { cardData.name}</Typography>
-                            <img 
+            <Grid container spacing={3} sx={{ paddingBottom: 2}}>
+                <Grid item xs={12} sm={12} md={6} lg={'abilities' in cardData ? 3 : 12}>
+                    <GridItem className='block' sx={{ perspective: 1000}}>
+                        <Typography variant='h3'>
+                            #{cardData.nationalPokedexNumbers} - { cardData.name}
+                        </Typography>
+                        <Box position='relative' width='100%' height='100%' display='flex' justifyContent='center'>
+                            <img
+                                className='display-card'
                                 src={cardData.images.large}
                                 alt={cardData.name}
-                                style={{
-                                    maxHeight: 300,
-                                    width: '10%'
-                                }}
                             />
-                        </GridItem>
-                    </Grid>
-                    <Grid item xs={12} sm={12} md={9} lg={9}>
-                        <GridItem>
+                        </Box>
+                    </GridItem>
+                </Grid>
+                { 'abilities' in cardData && <Grid item xs={12} sm={12} md={6} lg={9}>
+                    <GridItem className='block'>
+                        <Typography variant='h3'>Abilities</Typography>
                         <Grid container spacing={2}>
-                            <Grid item>
+                            <Grid item md={12}>
                                 <ListItem>
                                     <ListItemText>
-                                        <Typography>Pokedex Description:</Typography>
-                                        <Typography>{cardData.flavorText}</Typography>
-                                    </ListItemText>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemText>
-                                        <Typography>Type:</Typography>
-                                        <Typography>{cardData.types.join(' / ')}</Typography>
-                                    </ListItemText>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemText>
-                                        <Typography>Weaknesses:</Typography>
-                                        <Typography>{cardData.weaknesses[0].type}</Typography>
+                                        { cardData.abilities.map((ab, i) => (
+                                            <List>
+                                                <ListItem>
+                                                    <ListItemText>
+                                                        <Typography variant='h4'>Name:</Typography>
+                                                        <Typography>{ ab.name }</Typography>
+                                                    </ListItemText>
+                                                </ListItem>
+                                                <ListItem>
+                                                    <ListItemText>
+                                                        <Typography variant='h4'>Description:</Typography>
+                                                        <Typography>{ ab.text }</Typography>
+                                                    </ListItemText>
+                                                </ListItem>
+                                                <ListItem>
+                                                    <ListItemText>
+                                                        <Typography variant='h4'>Type:</Typography>
+                                                        <Typography>{ ab.type }</Typography>
+                                                    </ListItemText>
+                                                </ListItem>
+                                            </List>
+                                        )) }
                                     </ListItemText>
                                 </ListItem>
                             </Grid>
                         </Grid>
-                        </GridItem>
-                    </Grid>
+                    </GridItem>
+                </Grid>}
+                <Grid item md={6} lg={3}>
+                    <GridItem className='block'>
+                        <Grid container spacing={3}>
+                            <Grid item md={12}>
+                                <ListItem>
+                                    <ListItemText>
+                                        <Typography variant='h4'>Rarity:</Typography>
+                                        <Typography>{cardData.rarity}</Typography>
+                                    </ListItemText>
+                                </ListItem>
+                            </Grid>
+                            <Grid item md={4}>
+                                <ListItem>
+                                    <ListItemText>
+                                        <Typography variant='h4'>Type:</Typography>
+                                        <Typography>{cardData.types.join(' / ')}</Typography>
+                                    </ListItemText>
+                                </ListItem>
+                            </Grid>
+                            <Grid item md={4}>
+                                <ListItem>
+                                    <ListItemText>
+                                        <Typography variant='h4'>HP:</Typography>
+                                        <Typography>{cardData.hp}</Typography>
+                                    </ListItemText>
+                                </ListItem>
+                            </Grid>
+                            <Grid item md={4}>
+                                <ListItem>
+                                    <ListItemText>
+                                        <Typography variant='h4'>Level:</Typography>
+                                        <Typography>{cardData.level}</Typography>
+                                    </ListItemText>
+                                </ListItem>
+                            </Grid>
+                            <Grid item md={12}>
+                                <ListItem>
+                                    <ListItemText>
+                                        <Typography variant='h4'>Pokedex Description:</Typography>
+                                        <Typography>{cardData.flavorText}</Typography>
+                                    </ListItemText>
+                                </ListItem>
+                            </Grid>
+                        </Grid>
+                    </GridItem>
                 </Grid>
+                <Grid item md={6} lg={9}>
+                    <GridItem className='block'>
+                        <Typography variant='h3'>Attacks</Typography>
+                        <Grid container spacing={3} mt={1}>
+                            <Grid item md={12}>
+                                <TableContainer component={Paper}>
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>Name</TableCell>
+                                                <TableCell>Cost</TableCell>
+                                                <TableCell>Energy Cost</TableCell>
+                                                <TableCell>Damage</TableCell>
+                                                <TableCell>Description</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            { cardData.attacks.map((att, i) => (
+                                                <TableRow>
+                                                    <TableCell>
+                                                        { att.name }
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        { att.cost[0] }
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        { att.convertedEnergyCost }
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        { att.damage }
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        { att.text }
+                                                    </TableCell>
+                                                </TableRow>
+                                            )) }
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </Grid>
+                            <Grid item md={'resistances' in cardData ? 6 : 12}>
+                                <ListItem sx={{ textAlign: 'center'}}>
+                                    <ListItemText>
+                                        <Typography variant='h4'>Weaknesses:</Typography>
+                                        { cardData.weaknesses.map((weak, ind) => (
+                                            <Box key={`weak-${ind}`} >
+                                                <Typography>Type: {weak.type}</Typography>
+                                                <Typography>Value: {weak.value}</Typography>
+                                            </Box>
+                                        )) }
+                                    </ListItemText>
+                                </ListItem>
+                            </Grid>
+                            
+                            { 'resistances' in cardData && (
+                                <Grid item md={6}>
+                                    <ListItem sx={{ textAlign: 'center'}}>
+                                        <ListItemText>
+                                            <Typography variant='h4'>Resistances:</Typography>
+                                            { cardData.resistances.map((resi, ind) => (
+                                                <Box key={`resis-${ind}`} >
+                                                    <Typography>Type: {resi.type}</Typography>
+                                                    <Typography>Value: {resi.value}</Typography>
+                                                </Box>
+                                            )) }
+                                        </ListItemText>
+                                    </ListItem>
+                                </Grid>
+                            )}
+                        </Grid>
+                    </GridItem>
+                </Grid>
+                <Grid item md={12}>
+                    <GridItem className='block'>
+                        <Typography variant='h2' sx={{ display: 'flex', alignItems: 'center'}}>
+                        <StorefrontIcon sx={{ marginRight: 2, fontSize: 40}} />
+                            Market Information
+                        </Typography>
+                        <Grid container spacing={3}>
+                            <Grid item xs={12} sm={12} md={4} className='center-content'>
+                                <Typography variant='h4'>Update At:</Typography>
+                                <Typography>{ cardData.tcgplayer.updatedAt }</Typography>
+                            </Grid>                           
+                            <Grid item xs={12} sm={12} md={4} className='center-content'>
+                                <Typography variant='h4'>Prices</Typography>
+                                <TableContainer component={Paper} sx={{ mt: 1}}>
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>Lowest</TableCell>
+                                                <TableCell>average</TableCell>
+                                                <TableCell>Market</TableCell>
+                                                <TableCell>Highest</TableCell>
+                                                <TableCell>Current</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        <TableBody>
+                                            <TableRow>
+                                                { Object.values('holofoil' in cardData.tcgplayer.prices ? cardData.tcgplayer.prices.holofoil : cardData.tcgplayer.prices.unlimitedHolofoil).map((price, ind) => (
+                                                    <TableCell key={`price-${ind}`}>
+                                                        ${ price }
+                                                    </TableCell>
+                                                )) }
+                                            </TableRow>
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </Grid>
+                            <Grid item xs={12} sm={12} md={4} className='center-content'>
+                                <img 
+                                    src='https://mp-assets.tcgplayer.com/img/TCGplayer-logo-primary@2x.png'
+                                    alt='TCGPlayer'
+                                    style={{
+                                        width: '100%',
+                                        maxWidth: 400
+                                    }}
+                                />
+                                <Button 
+                                    variant='contained' 
+                                    href={cardData.tcgplayer.url} 
+                                    target="_blank"
+                                    sx={{ mt: 2}}
+                                >
+                                    Check
+                                </Button>
+                            </Grid> 
+                        </Grid>
+                    </GridItem>
+                </Grid>
+            </Grid>
         )
     }
 

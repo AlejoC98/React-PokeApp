@@ -16,14 +16,9 @@ const CardSet = () => {
   }, []);
 
   return (
-    // <Box className="block-container">
-    //   <Box className="block" gridColumn="span 4"  backgroundColor={ theme.palette.mode === "dark" ? colors.spacecadet[600] : colors.gray[800]}>
-    //     <DisplayItems data={cardSets} />
-    //   </Box>
-    // </Box>
-    <Box sx={{ flexGrow: 1 }}>
+    <Box flexGrow={1} >
     <Grid container spacing={2}>
-      <Grid item xs={12} sm={12} md={12}>
+      <Grid item md={12}>
         <GridItem>
           <DisplayItems data={cardSets} />
         </GridItem>

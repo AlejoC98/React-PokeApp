@@ -55,7 +55,7 @@ button.active {
     background-position: center bottom;
     padding: 1.5rem;
     position: relative;
-    min-height: 85vh;
+    min-height: 86.2vh;
 }
 
 // ********* FLIP CARD STYLES ************* //
@@ -118,6 +118,54 @@ button.active {
     display: none;
 }
 
+.winner-trophy {
+    animation: trophyShake 0.4s infinite alternate;
+    color: #ffd700 !important;
+    font-size: 2rem !important;
+}
+
+.block {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position: relative;
+    height: 100%;
+    min-height: 300px;
+}
+
+.center-content {
+    display: flex;
+    flex-direction: column !important;
+    justify-content: center;
+    align-items: center;
+}
+
+.display-card {
+    animation: flipping 5s infinite linear;
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    // min-height: 200px;
+}
+
+.display-card:hover {
+    animation-play-state: paused;
+    transform: rotateY(0deg) !important;
+    cursor: pointer;
+}
+
 @keyframes beat {
     to { transform: scale(1.1); }
+}
+
+@keyframes trophyShake {
+    from { transform: rotateZ(-20deg); }
+    to { transform: rotateZ(20deg); }
+}
+
+@keyframes flipping {
+    from { transform: rotateY(0deg);}
+    to { transform: rotateY(360deg);}
 }

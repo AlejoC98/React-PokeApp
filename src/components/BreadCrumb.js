@@ -9,7 +9,6 @@ const BreadCrumb = ({ name = '' }) => {
 
     if (name !== '') {
         urlPath[urlPath.length -1] = name;
-        console.log(name);
     }
 
     return (

@@ -184,7 +184,7 @@ export const themeSettings = (mode) => {
               main: colors.poppy[500]
             },
             warning: {
-              main: colors.orange[500],
+              main: colors.orange[500]
             },
             neutral: {
               dark: colors.orange[700],

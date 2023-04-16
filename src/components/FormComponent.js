@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { Formik } from 'formik'
 import * as yup from 'yup'
 import { GetCardSet, SetUpGame } from '../context/PokemonContext'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
+import { UserAuth } from '../context/AuthContext'
 
 const initialValues = {
     players: '',
@@ -22,12 +23,14 @@ const newGameSchema = yup.object().shape({
         })
     ),
     rounds: yup.number().required('This field is required').min(1, 'At least 1 round!').max(10, "Don't use more that 10!"),
-    matches: yup.number().required('This field is required').min(1, 'At least 1 matche!').max(10, "Don't use more that 10!"),
+    matches: yup.number().required('This field is required').min(1, 'At least 1 matche!').max(40, "Don't use more that 10!"),
     cardset: yup.string().required('This field is required'),
     level: yup.string().required('This field is required')
 });
 
 const NewGameForm = ({ form, handleClose }) => {
+
+    const { user } = UserAuth();
 
     const isNonMobile = useMediaQuery("(min-width:600px)");
 
@@ -35,9 +38,10 @@ const NewGameForm = ({ form, handleClose }) => {
 
     const Navigate = useNavigate();
 
-    const handleSubmit = (values) => {
+    const handleSubmit = (values, { resetForm }) => {
         handleClose();
         SetUpGame(values.cardset, values.level, values.matches).then((res) => {
+            resetForm();
             Navigate('/Game', {state : { data: values, cards: res}});
         }).catch((err) => {
             console.log(err);
@@ -50,7 +54,7 @@ const NewGameForm = ({ form, handleClose }) => {
         const numberOfPlayers = e.target.value || 0;
         
         for (let index = 0; index < numberOfPlayers; index++) {
-            playersList.push({name: ''});
+            playersList.push({name: (index === 0 ? user.displayName.split(' ')[0] : '')});
         }
 
         setValues({...values, playersList});
@@ -70,7 +74,7 @@ const NewGameForm = ({ form, handleClose }) => {
             validationSchema={newGameSchema}
             innerRef={form}
         >
-            {({ values, errors, touched, setValues, handleBlur, handleChange, handleSubmit}) => (
+            {({ values, errors, touched, setValues, handleBlur, handleChange, handleSubmit, resetForm}) => (
                 <form onSubmit={handleSubmit} id='new-game'>
                     <Box
                         display="grid" 
@@ -121,7 +125,7 @@ const NewGameForm = ({ form, handleClose }) => {
                             fullWidth
                             type='number'
                             label='#Matches'
-                            InputProps={{ inputProps: {min: 1, max: 10 }}}
+                            InputProps={{ inputProps: {min: 1, max: 40 }}}
                             onBlur={handleBlur}
                             onChange={handleChange}
                             value={values.matches}
@@ -163,9 +167,9 @@ const NewGameForm = ({ form, handleClose }) => {
                                 name='level'
                                 error={!!touched.level && !!errors.level}                               
                             >
-                                <MenuItem value={10}>Easy</MenuItem>
-                                <MenuItem value={20}>Medium</MenuItem>
-                                <MenuItem value={40}>Hard</MenuItem>
+                                <MenuItem value={10} disabled={values.matches > 5 ? true : false}>Easy</MenuItem>
+                                <MenuItem value={20} disabled={values.matches > 10 ? true : false}>Medium</MenuItem>
+                                <MenuItem value={40} disabled={values.matches > 20 ? true : false}>Hard</MenuItem>
                             </Select>
                         </FormControl>                       
                     </Box>
@@ -187,6 +191,7 @@ const NewGameForm = ({ form, handleClose }) => {
                                         label={`Player ${i + 1}`}
                                         onBlur={handleBlur}
                                         onChange={handleChange}
+                                        inputProps={{style: {textTransform: 'capitalize'}}}
                                         value={player.name}
                                         name={`playersList.${i}.name`}
                                         sx={{
