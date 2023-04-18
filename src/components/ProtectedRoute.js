@@ -18,7 +18,7 @@ const ProtectedLoggedRoute = ({ children }) => {
     const { user } = UserAuth();
     
     try {
-        if (user.email) {
+        if (user.email && user.emailVerified) {
             return (
                 <Navigate to='/Dashboard' />
             )

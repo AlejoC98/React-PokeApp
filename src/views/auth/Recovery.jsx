@@ -19,10 +19,11 @@ const Recovery = () => {
 
     const isNonMobile = useMediaQuery("(min-width:600px)");
 
-    const handleFormSubmit = async(values) => {
-        await recoveryPassword(values.username).then((res) => {
+    const handleFormSubmit = async(values, { resetForm }) => {
+        await recoveryPassword(values.username).then(() => {
             // We need to call notification function
-            console.log(res);
+            console.log('Password sent');
+            resetForm();
         }).catch((err) => {
             console.log(err);
         });
@@ -63,7 +64,7 @@ const Recovery = () => {
                         />
                     </Box>
                     <Box mt={2}>
-                        <Button type='submit' color='secondary' variant='contained' endIcon={<SendIcon />} fullWidth>
+                        <Button type='submit' color='warning' sx={{ color: '#fff'}} variant='contained' endIcon={<SendIcon />} fullWidth>
                             Send email
                         </Button>
                     </Box>

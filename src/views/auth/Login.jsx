@@ -1,7 +1,7 @@
-import { Box, TextField, Button, InputAdornment, IconButton } from '@mui/material'
-import React from 'react';
-// import { useTheme } from '@mui/material';
-// import { tokens } from '../../theme';
+import { Box, TextField, Button, InputAdornment, IconButton, Typography } from '@mui/material'
+import React, { useState } from 'react';
+import { useTheme } from '@mui/material';
+import { tokens } from '../../theme';
 import { Formik } from 'formik';
 import * as yup from "yup";
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -11,6 +11,9 @@ import PersonIcon from '@mui/icons-material/Person';
 import LoginIcon from '@mui/icons-material/Login';
 import { UserAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import SocialMediaButtons from '../../components/SocialMediaButtons';
+import LockIcon from "@mui/icons-material/Lock";
+import Notification from '../../components/Notification';
 
 const initialValues = {
   username: "",
@@ -27,15 +30,26 @@ const Login = () => {
   const navigate = useNavigate();
   const { signIn } = UserAuth();
 
-  // const theme = useTheme();
-  // const colors = tokens(theme.palette.mode);
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
+
+  const [error, setError] = useState({});
   
   const handleFormSubmit = async(values) => {
     await signIn(values.username, values.password).then(() => {
-      navigate("/Dashboard");
+      setError({
+        message: 'Login Success!',
+        status: 'success'
+      });
+      setTimeout(() => {
+        navigate("/Dashboard");
+      }, 5000);
     }).catch((err) => {
-      console.log(err);
+      setError({
+        message: err.code.split('/')[1],
+        status: 'error'
+      });
     });
   }
 
@@ -48,8 +62,11 @@ const Login = () => {
   };
 
   return (
-    <Box>
-      <h1 style={{ textAlign: 'center'}}>Login</h1>
+    <Box position='relative' top={30}>
+      <Notification status={error.status} message={error.message} />
+      <Typography variant='h1' sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 3}}>
+        <LockIcon sx={{ fontSize: 33, color: colors.midnightgreen[400]}} /> Log In
+      </Typography>
       <Formik
         onSubmit={handleFormSubmit}
         initialValues={initialValues}
@@ -119,13 +136,16 @@ const Login = () => {
               />
             </Box>
             <Box mt={2}>
-              <Button type='submit' color='secondary' variant='contained' endIcon={<LoginIcon />} fullWidth>
+              <Button type='submit' color='warning' sx={{ color: '#fff'}} variant='contained' endIcon={<LoginIcon />} fullWidth>
                 Log In
               </Button>
             </Box>
           </form>
         )}
       </Formik>
+      <Box>
+        <SocialMediaButtons />
+      </Box>
       <Box display="flex" color="primary" flexDirection="column" alignItems='end' mt={1}>
         <Button href='/SignIn'>
           Sign In

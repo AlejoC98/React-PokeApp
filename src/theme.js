@@ -184,7 +184,10 @@ export const themeSettings = (mode) => {
               main: colors.poppy[500]
             },
             warning: {
-              main: colors.orange[500]
+              main: colors.yellow[500]
+            },
+            info: {
+              main: colors.midnightgreen[500]
             },
             neutral: {
               dark: colors.orange[700],
@@ -207,7 +210,7 @@ export const themeSettings = (mode) => {
               main: colors.poppy[500]
             },
             warning: {
-              main: colors.orange[500],
+              main: colors.yellow[500],
             },
             neutral: {
               dark: colors.orange[700],

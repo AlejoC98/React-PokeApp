@@ -10,6 +10,7 @@ import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined
 import { UserAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import DialogComponent from "../../components/DialogComponent";
+// import FirebaseContext from "../../context/FirebaseContext";
 
 const Topbar = () => {
   // Setting const
@@ -21,6 +22,8 @@ const Topbar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const id = open ? "user-menu" : undefined;
+
+  // FirebaseContext();
 
   // Functions for user menu popper
   const handleClick = (event) => {

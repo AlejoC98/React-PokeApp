@@ -1,7 +1,7 @@
-import { Button, IconButton, InputAdornment, TextField, useMediaQuery } from '@mui/material'
+import { Avatar, Button, IconButton, InputAdornment, TextField, Typography, useMediaQuery } from '@mui/material'
 import { Box } from '@mui/system'
 import { Formik } from 'formik'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import * as yup from 'yup'
 import LoginIcon from '@mui/icons-material/Login';
 import Visibility from '@mui/icons-material/Visibility';
@@ -9,6 +9,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { PhotoCamera } from '@mui/icons-material';
 import { UserAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom'
+import SocialMediaButtons from '../../components/SocialMediaButtons'
 
 const initialValues = {
     firstName: '',
@@ -30,11 +31,13 @@ const SignIn = () => {
 
     const { createUser } = UserAuth();
 
+    const fileInput = useRef();
+
     const navigate = useNavigate();
 
     const handleSubmit = async (values, event) => {
         // await createUser(values.firstName, values.lastName, values.email, values.password, imageUpload);
-        await createUser(values.firstName, values.lastName, values.email, values.password, imageUpload).then((res) => {
+        await createUser(values.firstName, values.lastName, values.email, values.password, fileInput.current.files[0]).then((res) => {
             (res === true) ? navigate("/") : event.preventDefault();            
         }).catch((err) => {
             console.log(err);
@@ -50,14 +53,25 @@ const SignIn = () => {
     };
 
     const handleUploadImage = (fileInput) => {
-        setImageUpload(fileInput.target.files[0]);
+        const image = fileInput.target.files[0];
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+            setImageUpload(reader.result);
+        }
+
+        if (image) {
+            reader.readAsDataURL(image);
+        } else {
+            setImageUpload(null);
+        }
     };
 
     const isNonMobile = useMediaQuery("(min-width:600px)");
 
     return (
         <Box>
-            <h1 style={{ textAlign: 'center' }}>Sign In</h1>
+            <Typography variant='h1' textAlign='center' mb={3}>Sign In</Typography>
             <Formik
                 onSubmit={handleSubmit}
                 initialValues={initialValues}
@@ -81,6 +95,7 @@ const SignIn = () => {
                                 onBlur={handleBlur}
                                 onChange={handleChange}
                                 value={values.firstName}
+                                inputProps={{style: {textTransform: 'capitalize'}}}
                                 name='firstName'
                                 error={!!touched.firstName && !!errors.firstName}
                                 helperText={touched.firstName && errors.firstName}
@@ -96,6 +111,7 @@ const SignIn = () => {
                                 onBlur={handleBlur}
                                 onChange={handleChange}
                                 value={values.lastName}
+                                inputProps={{style: {textTransform: 'capitalize'}}}
                                 name='lastName'
                                 error={!!touched.lastName && errors.lastName}
                                 helperText={touched.lastName && errors.lastName}
@@ -119,10 +135,25 @@ const SignIn = () => {
                                 }}
                             />
                             
-                            <IconButton color='secondary' aria-label='upload picture' component='label' sx={{
-                                gridColumn: 'span 1'
-                            }}>
-                                <input hidden accept='image/*' type='file' name="img_profile" onChange={handleUploadImage}/>
+                            { imageUpload && (
+                                <Avatar 
+                                    src={imageUpload}
+                                    alt={imageUpload.name}
+                                    sx={{ width: 56, height: 56, cursor: 'pointer', marginLeft: 'auto', marginRight: 'auto' }}
+                                    onClick={() => fileInput.current.click()}
+                                />
+                            )}
+
+                            <IconButton 
+                                color='secondary' 
+                                aria-label='upload picture' 
+                                component='label' 
+                                sx={{
+                                    gridColumn: 'span 1',
+                                    display: imageUpload ? 'none' : 'inline-flex'
+                                }}
+                            >
+                                <input hidden ref={fileInput} accept='image/*' type='file' name="img_profile" onChange={handleUploadImage}/>
                                 <PhotoCamera />
                             </IconButton>
 
@@ -155,10 +186,13 @@ const SignIn = () => {
                                 }}
                             />
                         </Box>
-                        <Box mt={2}>
-                            <Button type='submit' color='secondary' variant='contained' fullWidth endIcon={<LoginIcon/>}>
-                                Sign In
-                            </Button>
+                            <Box mt={2}>
+                                <Button type='submit' color='warning' sx={{ color: '#fff'}} variant='contained' fullWidth endIcon={<LoginIcon/>}>
+                                    Sign In
+                                </Button>
+                            </Box>
+                        <Box>
+                            <SocialMediaButtons />
                         </Box>
                     </form>
                 )}

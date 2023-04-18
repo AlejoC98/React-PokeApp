@@ -12,7 +12,6 @@ import { AuthContextProvider } from "./context/AuthContext";
 import { ProtectedRoute, ProtectedLoggedRoute } from './components/ProtectedRoute';
 
 function App() {
-
   return (
     <AuthContextProvider>
       <Routes>
