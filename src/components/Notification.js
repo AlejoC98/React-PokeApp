@@ -1,46 +1,33 @@
 import { Alert } from '@mui/material'
-import React, { useEffect, useReducer } from 'react'
-
-function reducer(state, action) {
-  switch (action.type) {
-    case 'show':
-      return {
-        classname: 'animate__fadeIn',
-        display: true
-      }
-    case 'hide':
-      return {
-        classname: 'animate__fadeOut',
-        display: false
-      }
-    default:
-      throw new Error('Action not found');
-  }
-}
+import React, { useEffect, useState } from 'react'
 
 const Notification = ({status, message}) => {
 
-  const [state, dispatch] = useReducer(reducer, {
-    classname: '',
-    display: false
-  });
+  const [classname, setClassname] = useState('none');
 
   useEffect(() => {
-     if (message) {
-       dispatch({ type: 'show' });
-       setTimeout(() => {
-         dispatch({ type: 'hide' });
-       }, 5000);
-     }
-
-
+    if (message) {
+      setClassname('animate__fadeIn');
+      setTimeout(() => {
+        setClassname('animate__fadeOut');
+      }, 4000);
+    }
   }, [message]);
-  
-  if (state.display === true) {
-    return (
-      <Alert className={`animate__animated ${state.classname}`} severity={status} sx={{ position: 'relative'}}>{ message }</Alert>
-    );
-  }
+
+  return (
+    <Alert 
+      className={`animate__animated ${classname}`} 
+      severity={status} 
+      sx={{ 
+        position: 'absolute',
+        width: '100%',
+        top: 20
+      }}
+    >
+      { message }
+    </Alert>
+  );
+
 }
 
 export default Notification

@@ -18,8 +18,7 @@ import { auth, storage, db } from "../firebase";
 
 import { GoogleAuthProvider, FacebookAuthProvider } from "firebase/auth";
 
-const UserContext = createContext();
-
+export const UserContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState({});
@@ -56,8 +55,6 @@ export const AuthContextProvider = ({ children }) => {
   // function to check if user was or is logged
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      // (currentUser.emailVerified === true) ? setUser(currentUser) : setUser(null);
-      // setUser(currentUser.emailVerified === true ? currentUser : {});
       currentUser !== null ? currentUser.emailVerified === true ? setUser(currentUser) : setUser(null) : setUser(currentUser);
     });
 
@@ -159,6 +156,8 @@ export const AuthContextProvider = ({ children }) => {
         default:
           throw new Error('Option not valid');
       }
+
+      console.log(credential);
       // const token = credential.accessToken;
 
       await CreateNewUserData(result.user, result.user.displayName.split(" ")[0], result.user.displayName.split(" ")[1], result.user.email, result.user.photoURL);
@@ -167,13 +166,6 @@ export const AuthContextProvider = ({ children }) => {
       setUser(result.user);
     }).catch((error) => {
       let credential;
-      // Handle Errors here.
-      // const errorCode = error.code;
-      // const errorMessage = error.message;
-      // The email of the user's account used.
-      // const email = error.customData.email;
-      // The AuthCredential type that was used.
-
       switch (option) {
         case "google":
           credential = GoogleAuthProvider.credentialFromError(error);
@@ -184,6 +176,8 @@ export const AuthContextProvider = ({ children }) => {
         default:
           throw new Error('Option not valid');
       }
+
+      console.log(credential);
 
       throw new Error(error.message);
     });

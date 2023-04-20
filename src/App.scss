@@ -115,7 +115,7 @@ button.active {
 }
 
 .none { 
-    display: none;
+    display: none !important;
 }
 
 .winner-trophy {
@@ -154,6 +154,11 @@ button.active {
     animation-play-state: paused;
     transform: rotateY(0deg) !important;
     cursor: pointer;
+}
+
+.fav-btn {
+    color: #FFD700 !important;
+    z-index: 1000;
 }
 
 @keyframes beat {

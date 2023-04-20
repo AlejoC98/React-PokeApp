@@ -1,16 +1,13 @@
 import { useContext, useState } from "react";
 import { ColorModeContext, tokens } from "../../theme";
 import { useTheme, Box, IconButton, Avatar, MenuList, MenuItem, Popper, AppBar, Toolbar } from '@mui/material';
-import { styled, alpha } from '@mui/material/styles';
-import InputBase from "@mui/material/InputBase";
-import SearchIcon from '@mui/icons-material/Search';
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import { UserAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import DialogComponent from "../../components/DialogComponent";
-// import FirebaseContext from "../../context/FirebaseContext";
+import SearchBar from "../../components/SearchBar";
 
 const Topbar = () => {
   // Setting const
@@ -23,56 +20,10 @@ const Topbar = () => {
   const open = Boolean(anchorEl);
   const id = open ? "user-menu" : undefined;
 
-  // FirebaseContext();
-
-  // Functions for user menu popper
+   // Functions for user menu popper
   const handleClick = (event) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
-
-  // Sarchbar Styles
-  const Search = styled('div')(({ theme }) => ({
-    display: 'flex',
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: theme.palette.mode === "dark" ? alpha(theme.palette.common.white, 0.15) : colors.spacecadet[700],
-    '&:hover': {
-      backgroundColor: theme.palette.mode === "dark" ? colors.spacecadet[400] : colors.spacecadet[600],
-    },
-    marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(1),
-      width: 'auto',
-    },
-  }));
-  
-  const SearchIconWrapper = styled('div')(({ theme }) => ({
-    padding: theme.spacing(0, 2),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }));
-  
-  const StyledInputBase = styled(InputBase)(({ theme }) => ({
-    color: 'inherit',
-    '& .MuiInputBase-input': {
-      padding: theme.spacing(1, 1, 1, 0),
-      // vertical padding + font size from searchIcon
-      paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-      transition: theme.transitions.create('width'),
-      width: '100%',
-      [theme.breakpoints.up('sm')]: {
-        width: '12ch',
-        '&:focus': {
-          width: '20ch',
-        },
-      },
-    },
-  }));
   
   const handleLogOut = async() => {
     await logOut().then((res) => {
@@ -81,6 +32,7 @@ const Topbar = () => {
       console.log(err);
     })
   };
+
 
   return (
     <Box>
@@ -93,12 +45,8 @@ const Topbar = () => {
           }
         }>
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase placeholder="Search.." aria-label="search" />
-          </Search>
+          {/* Here's goes the search bar */}
+          <SearchBar />
           <Box display="flex" alignItems="center">
             <Box>
               <DialogComponent title='Create New Game' buttonText={'Create'} innerModule='./NewGameFormComponent' />

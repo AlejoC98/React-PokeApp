@@ -16,7 +16,6 @@ const ProtectedRoute = ({ children }) => {
 
 const ProtectedLoggedRoute = ({ children }) => {
     const { user } = UserAuth();
-    
     try {
         if (user.email && user.emailVerified) {
             return (
@@ -35,7 +34,6 @@ const ProtectedLoggedRoute = ({ children }) => {
             )
         }
     }
-
 }
 
 export { ProtectedRoute, ProtectedLoggedRoute };

@@ -10,7 +10,6 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import PersonIcon from '@mui/icons-material/Person';
 import LoginIcon from '@mui/icons-material/Login';
 import { UserAuth } from '../../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
 import SocialMediaButtons from '../../components/SocialMediaButtons';
 import LockIcon from "@mui/icons-material/Lock";
 import Notification from '../../components/Notification';
@@ -27,7 +26,6 @@ const accountSchema = yup.object().shape({
 
 const Login = () => {
 
-  const navigate = useNavigate();
   const { signIn } = UserAuth();
 
   const theme = useTheme();
@@ -42,12 +40,9 @@ const Login = () => {
         message: 'Login Success!',
         status: 'success'
       });
-      setTimeout(() => {
-        navigate("/Dashboard");
-      }, 5000);
     }).catch((err) => {
       setError({
-        message: err.code.split('/')[1],
+        message: err.message,
         status: 'error'
       });
     });
@@ -62,97 +57,99 @@ const Login = () => {
   };
 
   return (
-    <Box position='relative' top={30}>
+    <Box position='relative'>
       <Notification status={error.status} message={error.message} />
-      <Typography variant='h1' sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 3}}>
-        <LockIcon sx={{ fontSize: 33, color: colors.midnightgreen[400]}} /> Log In
-      </Typography>
-      <Formik
-        onSubmit={handleFormSubmit}
-        initialValues={initialValues}
-        validationSchema={accountSchema}
-      >
-        {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (
-          <form onSubmit={handleSubmit}>
-            <Box
-              display="grid"
-              gap="30px"
-              gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-              sx={{
-                "& > div": { gridColumn: isNonMobile ? undefined : "span 4" }
-              }}
-            >
-              <TextField
-                fullWidth
-                variant='outlined'
-                type="email"
-                label="Username"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.username}
-                name="username"
-                error={!!touched.username && !!errors.username}
-                helperText={touched.username && errors.username}
+      <Box position='relative' top={70}>
+        <Typography variant='h1' sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 3 }}>
+          <LockIcon sx={{ fontSize: 33, color: colors.midnightgreen[400] }} /> Log In
+        </Typography>
+        <Formik
+          onSubmit={handleFormSubmit}
+          initialValues={initialValues}
+          validationSchema={accountSchema}
+        >
+          {({ values, errors, touched, handleBlur, handleChange, handleSubmit }) => (
+            <form onSubmit={handleSubmit}>
+              <Box
+                display="grid"
+                gap="30px"
+                gridTemplateColumns="repeat(4, minmax(0, 1fr))"
                 sx={{
-                  gridColumn: "span 4"
+                  "& > div": { gridColumn: isNonMobile ? undefined : "span 4" }
                 }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position='start'>
-                      <PersonIcon />
-                    </InputAdornment>
-                  )
-                }}
+              >
+                <TextField
+                  fullWidth
+                  variant='outlined'
+                  type="email"
+                  label="Username"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.username}
+                  name="username"
+                  error={!!touched.username && !!errors.username}
+                  helperText={touched.username && errors.username}
+                  sx={{
+                    gridColumn: "span 4"
+                  }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position='start'>
+                        <PersonIcon />
+                      </InputAdornment>
+                    )
+                  }}
 
-              />
+                />
 
-              <TextField
-                fullWidth
-                variant='outlined'
-                type={showPassword ? 'text' : 'password'}
-                name='password'
-                label="Password"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.password}
-                error={!!touched.password && !!errors.password}
-                helperText={touched.password && errors.password}
-                sx={{
-                  gridColumn: "span 4"
-                }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <IconButton
-                        aria-label="Toggle password visibility"
-                        onClick={handleClickShowPassword}
-                        onMouseDown={handleMouseDownPassword}
-                      >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  )
-                }}
-              />
-            </Box>
-            <Box mt={2}>
-              <Button type='submit' color='warning' sx={{ color: '#fff'}} variant='contained' endIcon={<LoginIcon />} fullWidth>
-                Log In
-              </Button>
-            </Box>
-          </form>
-        )}
-      </Formik>
-      <Box>
-        <SocialMediaButtons />
-      </Box>
-      <Box display="flex" color="primary" flexDirection="column" alignItems='end' mt={1}>
-        <Button href='/SignIn'>
-          Sign In
-        </Button>
-        <Button href='/Recovery'>
-          Forgot Password?
-        </Button>
+                <TextField
+                  fullWidth
+                  variant='outlined'
+                  type={showPassword ? 'text' : 'password'}
+                  name='password'
+                  label="Password"
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  value={values.password}
+                  error={!!touched.password && !!errors.password}
+                  helperText={touched.password && errors.password}
+                  sx={{
+                    gridColumn: "span 4"
+                  }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <IconButton
+                          aria-label="Toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    )
+                  }}
+                />
+              </Box>
+              <Box mt={2}>
+                <Button type='submit' color='warning' sx={{ color: '#fff' }} variant='contained' endIcon={<LoginIcon />} fullWidth>
+                  Log In
+                </Button>
+              </Box>
+            </form>
+          )}
+        </Formik>
+        <Box>
+          <SocialMediaButtons />
+        </Box>
+        <Box display="flex" color="primary" flexDirection="column" alignItems='end' mt={1}>
+          <Button href='/SignIn'>
+            Sign In
+          </Button>
+          <Button href='/Recovery'>
+            Forgot Password?
+          </Button>
+        </Box>
       </Box>
     </Box>
   )
