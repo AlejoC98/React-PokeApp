@@ -16,8 +16,9 @@ const getDocsFirebase = async(search) => {
         querySnapshot.forEach((doc) => {
         // Extract the data from each document
         const user = doc.data();
-        if ( Object.values(user).find(f => f.toLowerCase().includes(search)) !== undefined )
-            users.push(user);
+        users.push(user);
+        // if ( Object.values(user).find(f => f.toLowerCase().includes(search)) !== undefined )
+        //     users.push(user);
         });
     });
 

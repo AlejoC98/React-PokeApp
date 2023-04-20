@@ -1,4 +1,4 @@
-import React, { useState, useRef, forwardRef } from 'react';
+import React, { useState, useRef, forwardRef, useEffect } from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
@@ -74,17 +74,21 @@ const App = () => {
 
     if (event.target.value !== '') {
         // Do something with the updated search value
-        await getDocsFirebase(event.target.value).then((res) => {
-            setResultData(res);
-            res.length > 0 ? setSearchResultClass('animate__fadeInDown') : setSearchResultClass('animate__fadeOutUp');
-        }).catch((err) => {
-            console.log(err);
-        });
+        
     } else {
         setResultData([]);
         setSearchResultClass('animate__fadeOutUp');
     }
   };
+
+  useEffect(() => {
+    getDocsFirebase().then((res) => {
+        setResultData(res);
+        // res.length > 0 ? setSearchResultClass('animate__fadeInDown') : setSearchResultClass('animate__fadeOutUp');
+    }).catch((err) => {
+        console.log(err);
+    });
+  }, []);
 
   // Function to manually set focus on the input element
   const handleInputFocus = () => {
