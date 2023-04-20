@@ -1,28 +1,85 @@
 import { collection, getDocs, where, query, addDoc, deleteDoc, doc } from "firebase/firestore";
 import { auth, db } from "../firebase";
+import { GetCardSet } from "./PokemonContext";
 
-const getDocsFirebase = async(search) => {
+const createFirebaseDocs = async() => {
+    const sets = await GetCardSet();
 
+    sets.forEach(async(set, ind) => {
+        await addDoc(collection(db, "cardsets"), {
+            id: set.id,
+            name: set.name,
+            profile: set.images.logo,
+            series: set.series
+        });
+
+        const setContent = await GetCardSet('filter_id', {id : set.id});
+
+        setContent.content.forEach(async(card, i) => {
+            await addDoc(collection(db, "cards"), {
+                cardset_id: set.id,
+                id: card.id,
+                name: card.name,
+                profile: card.images.small,
+                setname: set.name
+            });
+        });
+
+    });
+
+}
+
+const getSearchDocs = async() => {
+
+    const response = [];
+    // Search users
     const usersCollectionRef = collection(db, "users");
 
-    const q = query(
+    const uq = query(
         usersCollectionRef,
         where('email', '!=', auth.currentUser.email)
     );
 
-    const users = [];
 
-    await getDocs(q).then((querySnapshot) => {
+    await getDocs(uq).then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
         // Extract the data from each document
-        const user = doc.data();
-        users.push(user);
-        // if ( Object.values(user).find(f => f.toLowerCase().includes(search)) !== undefined )
-        //     users.push(user);
+        const rescord = doc.data();
+        response.push(rescord);
         });
     });
 
-    return users;
+    // Search sets
+    const setsCollectionRef = collection(db, "cardsets");
+
+    const sq = query(
+        setsCollectionRef,
+    );
+
+    await getDocs(sq).then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+        // Extract the data from each document
+        const rescord = doc.data();
+        response.push(rescord);
+        });
+    });
+
+    // Search cards
+    const cardsCollectionRef = collection(db, "cards");
+
+    const cq = query(
+        cardsCollectionRef,
+    );
+
+    await getDocs(cq).then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+        // Extract the data from each document
+        const rescord = doc.data();
+        response.push(rescord);
+        });
+    });
+
+    return response;
 
 }
 
@@ -72,4 +129,4 @@ const updateFavorites = async(favorites) => {
     return response;
 }
 
-export { getDocsFirebase, updateFavorites }
+export { getSearchDocs, updateFavorites, createFirebaseDocs }

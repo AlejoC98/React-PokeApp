@@ -10,6 +10,7 @@ import Game from "./views/game";
 import { AuthLayout, AppLayaout } from "./views/global/Layaout";
 import { AuthContextProvider } from "./context/AuthContext";
 import { ProtectedRoute, ProtectedLoggedRoute } from './components/ProtectedRoute';
+import UserInfo from "./views/users/UserInfo";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           </ProtectedRoute>
           }>
           <Route path="/Dashboard" element={<Dashboard />}/>
+          <Route path="/Dashboard/:user" element={<UserInfo />}/>
           <Route path="/CardSet" element={<CardSet />} />
           <Route path="/CardSet/:set" element={<SetDescription />} />
           <Route path="/CardSet/:set/:card" element={<CardDescription />} />

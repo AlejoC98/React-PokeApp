@@ -17,6 +17,7 @@ const CardDescription = () => {
     const colors = tokens(theme.palette.mode);
 
     useEffect(() => {
+        setCardData({});
         let set = pathname.split('/')[2];
         set = set.replace(/%20/g , ' ');
         GetCard(set, card).then(res => {

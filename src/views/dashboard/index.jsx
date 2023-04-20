@@ -1,8 +1,14 @@
 import { Box } from "@mui/material";
 import Grid from '@mui/material/Grid';
 import { GridItem } from "../../theme";
+// import { createFirebaseDocs } from "../../context/FirebaseContext";
+// import { useEffect } from "react";
 
 const Dashboard = () => {
+
+  // useEffect(() => {
+  //   createFirebaseDocs();
+  // }, []);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
