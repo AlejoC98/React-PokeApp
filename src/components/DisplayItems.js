@@ -10,7 +10,7 @@ import GradeIcon from '@mui/icons-material/Grade';
 import { updateFavorites } from '../context/FirebaseContext';
 // import { GetCardSet } from '../context/PokemonContext';
 
-const DisplayItems = ({ data, display = 'list-view', module = ''}) => {
+const DisplayItems = ({ data, display = 'list-view'}) => {
 
     const [active, setActive] = useState(display);
     const theme = useTheme();
@@ -26,8 +26,9 @@ const DisplayItems = ({ data, display = 'list-view', module = ''}) => {
             setActive(btn);
     }
 
-    const handleOpen = (setId) => {
-        navigate(window.location.pathname + '/' + setId);
+    const handleOpen = (setName) => {
+        // navigate(window.location.pathname + '/' + setId);
+        navigate(window.location.pathname + '/' + setName);
     }
 
     const handleFavorite = (ele) => {
@@ -57,15 +58,22 @@ const DisplayItems = ({ data, display = 'list-view', module = ''}) => {
             data.forEach((element, index) => {
                 // ItemsLoop.push(<p>{element.name}</p>);
                 ItemsLoop.push(
-                    <ListItem key={index} sx={{ padding: 0}}>
-                        <Button color='warning' className='fav-btn' onClick={() => handleFavorite(element.id)}>
+                    <ListItem key={index} sx={{ padding: 0}} className='list-items'>
+                        <Button 
+                            color='warning' 
+                            className='fav-btn' 
+                            onClick={() => handleFavorite(element.id)} 
+                            sx={{
+                                display: favoritesDisplay.includes(element.id) ? 'block' : 'none'
+                            }}
+                        >
                             { favoritesDisplay.includes(element.id) ? (
                                 <GradeIcon />
                                 ) : (
                                 <StarBorderIcon />
                             ) }
                         </Button>
-                        <ListItemButton sx={{ padding: '8px 0'}} onClick={() => handleOpen(element.id, element.name)}>
+                        <ListItemButton sx={{ padding: '8px 0', left: favoritesDisplay.includes(element.id) ? 0 : 65}} onClick={() => handleOpen(element.name, element.name)}>
                             <ListItemText>{element.name}</ListItemText>
                         </ListItemButton>
                     </ListItem>
@@ -86,15 +94,15 @@ const DisplayItems = ({ data, display = 'list-view', module = ''}) => {
             data.forEach((element, index) => {
                 // ItemsLoop.push(<p>{element.name}</p>);
                 ItemsLoop.push(
-                    <Card key={index} sx={{ width: 250, margin: 1, position: 'relative'}}>
-                            <Button color='warning' className='fav-btn' onClick={() => handleFavorite(element.id)} sx={{ position: 'absolute', right: 0}}>
+                    <Card key={index} sx={{ width: 250, margin: 1, position: 'relative'}} className='cardElement'>
+                            <Button color='warning' className='fav-btn' onClick={() => handleFavorite(element.id)} sx={{ position: 'absolute', right: 0, display: favoritesDisplay.includes(element.id) ? 'block' : 'none' }}>
                                 { favoritesDisplay.includes(element.id) ? (
                                     <GradeIcon />
                                     ) : (
                                     <StarBorderIcon />
                                 ) }
                             </Button>
-                        <CardActionArea sx={{ height: '100%'}} onClick={() => handleOpen(element.id, element.name)}>
+                        <CardActionArea sx={{ height: '100%'}} onClick={() => handleOpen(element.name, element.name)}>
                             <CardMedia
                                 component='img'
                                 alt={element.name}
@@ -131,7 +139,7 @@ const DisplayItems = ({ data, display = 'list-view', module = ''}) => {
                 alignItems='center'
                 width='100%'
             >
-                <BreadCrumb name={module} />
+                <BreadCrumb />
                 <Box display='flex' justifyContent='space-between' width={75}>
                     <button 
                         className={active === 'list-view' ? 'active' : ''} 

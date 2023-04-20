@@ -3,17 +3,38 @@ import { Box, CssBaseline, ThemeProvider, useMediaQuery, useTheme } from "@mui/m
 import { Outlet } from "react-router-dom";
 import TopBar from './TopBar';
 import LeftBar from './LeftBar';
+import { useState } from 'react';
+import { BallTriangle } from 'react-loader-spinner';
 
 const AppLayaout = () => {
 
   const [theme, colorMode] = useMode();
   const isNonMobile = useMediaQuery("(min-width:900px)");
 
+  const [isLoading, setIsLoading] = useState(false);
+
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <div className="app" style={{ display: 'flex', alignItems: 'center'}}>
+          { isLoading && (
+            <Box
+                position='absolute'
+                top={0}
+                left={0}
+                backgroundColor='RGBA(180,180,180,0.44)'
+                width='100%'
+                height='100%'
+                zIndex={100000}
+                display='flex'
+                justifyContent='center'
+                alignItems='center'
+              >
+                <BallTriangle
+                />
+            </Box>
+          )}
           <LeftBar/>
           <main 
             className="content" 
@@ -25,7 +46,7 @@ const AppLayaout = () => {
               padding: '20px 10px'
             }}
           >
-            <TopBar />
+            <TopBar setIsLoading={setIsLoading} />            
             <Outlet />
           </main>
         </div>

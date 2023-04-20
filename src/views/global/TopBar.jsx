@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import DialogComponent from "../../components/DialogComponent";
 import SearchBar from "../../components/SearchBar";
 
-const Topbar = () => {
+const Topbar = ({setIsLoading}) => {
   // Setting const
   const { user, logOut } = UserAuth();
   const navigate = useNavigate();
@@ -49,7 +49,7 @@ const Topbar = () => {
           <SearchBar />
           <Box display="flex" alignItems="center">
             <Box>
-              <DialogComponent title='Create New Game' buttonText={'Create'} innerModule='./NewGameFormComponent' />
+              <DialogComponent title='Create New Game' buttonText={'Create'} innerModule='./NewGameFormComponent' setIsLoading={setIsLoading}/>
             </Box>
             <Box>
               <IconButton onClick={colorMode.toggleColorMode}>

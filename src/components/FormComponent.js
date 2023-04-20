@@ -28,7 +28,7 @@ const newGameSchema = yup.object().shape({
     level: yup.string().required('This field is required')
 });
 
-const NewGameForm = ({ form, handleClose }) => {
+const NewGameForm = ({ form, handleClose, setIsLoading }) => {
 
     const { user } = UserAuth();
 
@@ -40,8 +40,10 @@ const NewGameForm = ({ form, handleClose }) => {
 
     const handleSubmit = (values, { resetForm }) => {
         handleClose();
+        setIsLoading(true);
         SetUpGame(values.cardset, values.level, values.matches).then((res) => {
             resetForm();
+            setIsLoading(false);
             Navigate('/Game', {state : { data: values, cards: res}});
         }).catch((err) => {
             console.log(err);
@@ -73,7 +75,7 @@ const NewGameForm = ({ form, handleClose }) => {
             initialValues={initialValues}
             validationSchema={newGameSchema}
             innerRef={form}
-        >
+            >
             {({ values, errors, touched, setValues, handleBlur, handleChange, handleSubmit, resetForm}) => (
                 <form onSubmit={handleSubmit} id='new-game'>
                     <Box
@@ -205,7 +207,7 @@ const NewGameForm = ({ form, handleClose }) => {
                     </Box>
                 </form>
             )}
-        </Formik>
+            </Formik>
         </Box>
     )
 }

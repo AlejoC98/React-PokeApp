@@ -5,7 +5,7 @@ import { useRef, useState } from 'react';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { NewGameForm } from './FormComponent';
 
-const DialogComponent = ({ title, buttonText, innerModule }) => {
+const DialogComponent = ({ title, buttonText, setIsLoading }) => {
 
   const [open, setOpen] = useState(false);
   const theme = useTheme();
@@ -49,7 +49,7 @@ const DialogComponent = ({ title, buttonText, innerModule }) => {
           { title }
         </DialogTitle>
         <DialogContent>
-          <NewGameForm form={currentForm} handleClose={handleClose} />
+          <NewGameForm form={currentForm} handleClose={handleClose} setIsLoading={setIsLoading} />
         </DialogContent>
         <DialogActions sx={{ display: 'flex', justifyContent: 'space-between'}}>
             <Button variant='contained' color='secondary' sx={{ color: '#ffffff'}} onClick={handleClose}>Close</Button>

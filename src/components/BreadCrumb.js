@@ -7,10 +7,6 @@ const BreadCrumb = ({ name = '' }) => {
 
     const urlPath = window.location.pathname.split('/');
 
-    if (name !== '') {
-        urlPath[urlPath.length -1] = name;
-    }
-
     return (
         <Box display='block' width='100%'>
             <Breadcrumbs aria-label='BreadCrumb'>

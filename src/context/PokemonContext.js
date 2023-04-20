@@ -1,6 +1,6 @@
 import pokemon from 'pokemontcgsdk'
 
-pokemon.configure({apiKey: '11800482-77f0-4124-b53f-7f12ac6d690c'})
+pokemon.configure({apiKey: '11800482-77f0-4124-b53f-7f12ac6d690c'});
 
 function shuffle(array) {
     let currentIndex = array.length,  randomIndex;
@@ -29,6 +29,14 @@ const GetCardSet = async(action = '', params = {}) => {
                     return {name: setData.name, content: result};
                 });
             });
+        case 'filter_name':
+            return await pokemon.set.all().then(async(result) => {
+                let CardSet = result.find(s => s.name === params.name);
+                if (CardSet !== undefined)
+                    return await pokemon.card.all({q: `set.id:${CardSet.id}`}).then((cards) => {
+                        return cards;
+                    });
+            });
         default:
             return await pokemon.set.all().then(sets => {
                 return sets;
@@ -37,10 +45,21 @@ const GetCardSet = async(action = '', params = {}) => {
 
 }
 
-const GetCard = async(card) => {
-    return await pokemon.card.where({q: 'id:' + card}).then(result => {
-        return result.data[0];
-    })
+const GetCard = async(set, card) => {
+    // return await pokemon.card.where({q: 'id:' + card}).then(result => {
+    //     return result.data[0];
+    // })
+    let cardsOptions;
+
+    await pokemon.set.all().then(async(result) => {
+        let CardSet = result.find(s => s.name === set);
+        if (CardSet !== undefined)
+            await pokemon.card.all({q: `set.id:${CardSet.id}`}).then((cards) => {
+                cardsOptions = cards;
+            });
+    });
+
+    return cardsOptions.find(c => c.name === card);
 }
 
 const SetUpGame = async(set, level, matches) => {

@@ -161,6 +161,18 @@ button.active {
     z-index: 1000;
 }
 
+.cardElement:hover button {
+    display: block !important;
+}
+
+.list-items:hover > div {
+    left: 0;
+}
+
+.list-items:hover button {
+    display: block !important;
+}
+
 @keyframes beat {
     to { transform: scale(1.1); }
 }
