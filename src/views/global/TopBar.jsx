@@ -8,6 +8,7 @@ import { UserAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import DialogComponent from "../../components/DialogComponent";
 import SearchBar from "../../components/SearchBar";
+import HamburgerMenu from "../../components/HamburgerMenu";
 
 const Topbar = ({setIsLoading}) => {
   // Setting const
@@ -47,11 +48,28 @@ const Topbar = ({setIsLoading}) => {
         <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
           {/* Here's goes the search bar */}
           <SearchBar />
-          <Box display="flex" alignItems="center">
-            <Box>
+          <Box display="flex" alignItems="center" sx={{
+            justifyContent: {
+              xs: 'space-between',
+              sm: 'space-between'
+            }
+          }}>
+            <Box sx={{
+              display: {
+                xs: 'none',
+                sm: 'none',
+                md: 'block'
+              }
+            }}>
               <DialogComponent title='Create New Game' buttonText={'Create'} innerModule='./NewGameFormComponent' setIsLoading={setIsLoading}/>
             </Box>
-            <Box>
+            <Box sx={{
+              display: {
+                xs: 'none',
+                sm: 'inline-flex',
+                md: 'inline-flex'
+              }
+            }}>
               <IconButton onClick={colorMode.toggleColorMode}>
                 {theme.palette.mode === "dark" ? (
                   <LightModeOutlinedIcon />
@@ -63,11 +81,16 @@ const Topbar = ({setIsLoading}) => {
                 <NotificationsOutlinedIcon />
               </IconButton>
             </Box>
-            <Box>
+            <Box sx={{
+              marginRight: {
+                xs: 1,
+                sm: 1
+              }
+            }}>
               <IconButton aria-describedby={id} onClick={handleClick}>
                 <Avatar alt={user !== null ? user.displayName : "temp"} src={user !== null ? user.photoURL : "http://"} />
               </IconButton>
-              <Popper id={id} open={open} anchorEl={anchorEl}>
+              <Popper id={id} open={open} anchorEl={anchorEl} sx={{ zIndex: 1000}}>
                 <MenuList sx={{ background: colors.spacecadet[600] }}>
                   <MenuItem>My Account</MenuItem>
                   <MenuItem>Awards</MenuItem>
@@ -75,6 +98,7 @@ const Topbar = ({setIsLoading}) => {
                 </MenuList>
               </Popper>
             </Box>
+            <HamburgerMenu setIsLoading={setIsLoading} poperOpen={handleClick} />
           </Box>
         </Toolbar>
       </AppBar>

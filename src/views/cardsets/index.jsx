@@ -21,7 +21,7 @@ const CardSet = () => {
   return (
     <Box flexGrow={1} >
     <Grid container spacing={2}>
-      <Grid item md={12}>
+      <Grid item xs={12} sm={12} md={12}>
         <GridItem>
           {/* <DisplayItems data={cardSets} /> */}
           { cardSets.length > 0 ? (

@@ -14,8 +14,8 @@ const UserInfo = () => {
     <Grid container spacing={3}>
         <Grid item md={12}>
             <GridItem>
-                <Grid container spacing={3} sx={{ display: 'flex', alignItems: 'center'}}>
-                    <Grid item md={3}>
+                <Grid container spacing={3} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                    <Grid item sm={12} md={3}>
                         <Avatar 
                             src={userData.profile}
                             alt={userData.name}
@@ -25,7 +25,7 @@ const UserInfo = () => {
                             }}
                         />
                     </Grid>
-                    <Grid item md={9} sx={{ display: 'flex', justifyContent: 'space-between'}}>
+                    <Grid item sm={12} md={9} sx={{ display: 'flex', justifyContent: 'space-between'}}>
                         <Box textAlign='center'>
                             <Typography variant='h3'>
                                 { userData.firstname } { userData.lastname }

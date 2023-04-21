@@ -5,7 +5,7 @@ import { useRef, useState } from 'react';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { NewGameForm } from './FormComponent';
 
-const DialogComponent = ({ title, buttonText, setIsLoading }) => {
+const DialogComponent = ({ title, buttonText, setIsLoading, setOpenMenu}) => {
 
   const [open, setOpen] = useState(false);
   const theme = useTheme();
@@ -24,6 +24,7 @@ const DialogComponent = ({ title, buttonText, setIsLoading }) => {
   const handleSubmit = () => {
     if (currentForm.current) {
       currentForm.current.handleSubmit();
+      setOpenMenu(false);
     }
   }
 

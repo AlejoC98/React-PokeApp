@@ -40,8 +40,8 @@ const AppLayaout = () => {
             className="content" 
             style={{ 
               position: 'relative', 
-              left: isNonMobile ? 100 : 50,
-              width: 'calc(100% - 100px)',
+              left: isNonMobile ? 100 : 0,
+              width: isNonMobile ? 'calc(100% - 100px)' : '100%',
               top: 64,
               padding: '20px 10px'
             }}

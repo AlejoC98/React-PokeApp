@@ -173,6 +173,23 @@ button.active {
     display: block !important;
 }
 
+.hamburger-menu {
+    // background-color: rgba(51,51,51,0.9);
+    background-color: RGBA(156,174,169,0.7);
+    backdrop-filter: blur(5px);
+    position: fixed;
+    top: 0;
+    height: 100vh;
+    width: 100%;
+    padding-top: 1rem;
+    transition: all 0.3s ease-out;
+    left: 100%;
+}
+
+.hamburger-menu.open {
+    left: 0;
+}
+
 @keyframes beat {
     to { transform: scale(1.1); }
 }

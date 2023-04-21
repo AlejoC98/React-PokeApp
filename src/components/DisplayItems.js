@@ -140,7 +140,7 @@ const DisplayItems = ({ data, display = 'list-view'}) => {
                 width='100%'
             >
                 <BreadCrumb />
-                <Box display='flex' justifyContent='space-between' width={75}>
+                <Box display='flex' justifyContent='space-around' width={75}>
                     <button 
                         className={active === 'list-view' ? 'active' : ''} 
                         style={{ 
@@ -149,6 +149,7 @@ const DisplayItems = ({ data, display = 'list-view'}) => {
                             border: `1px solid ${colors.gray[600]}`, 
                             borderRadius: 3, 
                             cursor: active === 'list-view' ? 'default' : 'pointer',
+                            marginRight: 5,
                             '&:hover' : {
                                 backgroundColor: colors.gray[100]
                             }

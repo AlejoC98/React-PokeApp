@@ -238,7 +238,7 @@ const Game = () => {
                                     { state.cards.map((element, index) => (
                                         <Grid 
                                             item 
-                                            md={2} 
+                                            md={2}
                                             key={`card-${index}`} 
                                             sx={{ 
                                                 textAlign: 'center',
