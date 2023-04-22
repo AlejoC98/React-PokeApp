@@ -131,16 +131,17 @@ const CardDescription = () => {
                         </Grid>
                     </GridItem>
                 </Grid>
-                <Grid item md={'abilities' in cardData ? 6 : 12} lg={ 'abilities' in cardData ? 9 : 12}>
+                {/* <Grid item md={'abilities' in cardData ? 6 : 12} lg={ 'abilities' in cardData ? 9 : 12}> */}
+                <Grid item xs={12} sm={12} md={12} lg={12}>
                     <GridItem className='block'>
                         <Typography variant='h3'>Attacks</Typography>
-                        <Grid container spacing={3} mt={1}>
-                            <Grid item md={12}>
+                        <Grid container spacing={3} mt={2}>
+                            <Grid item xs={12} sm={12} md={12} lg={12}>
                                 <TableContainer component={Paper}>
                                     <Table>
                                         <TableHead>
                                             <TableRow>
-                                                <TableCell>Name</TableCell>
+                                            <TableCell>Name</TableCell>
                                                 <TableCell>Cost</TableCell>
                                                 <TableCell>Energy Cost</TableCell>
                                                 <TableCell>Damage</TableCell>
@@ -171,22 +172,23 @@ const CardDescription = () => {
                                     </Table>
                                 </TableContainer>
                             </Grid>
-                            <Grid item md={'resistances' in cardData ? 6 : 12}>
-                                <ListItem sx={{ textAlign: 'center'}}>
-                                    <ListItemText>
-                                        <Typography variant='h4'>Weaknesses:</Typography>
-                                        { cardData.weaknesses.map((weak, ind) => (
-                                            <Box key={`weak-${ind}`} >
-                                                <Typography>Type: {weak.type}</Typography>
-                                                <Typography>Value: {weak.value}</Typography>
-                                            </Box>
-                                        )) }
-                                    </ListItemText>
-                                </ListItem>
-                            </Grid>
-                            
+                            { 'weaknesses' in cardData && (
+                                <Grid item xs={12} sm={12} md={'resistances' in cardData ? 6 : 12}>
+                                    <ListItem sx={{ textAlign: 'center'}}>
+                                        <ListItemText>
+                                            <Typography variant='h4'>Weaknesses:</Typography>
+                                            { cardData.weaknesses.map((weak, ind) => (
+                                                <Box key={`weak-${ind}`} >
+                                                    <Typography>Type: {weak.type}</Typography>
+                                                    <Typography>Value: {weak.value}</Typography>
+                                                </Box>
+                                            )) }
+                                        </ListItemText>
+                                    </ListItem>
+                                </Grid>
+                            ) }
                             { 'resistances' in cardData && (
-                                <Grid item md={6}>
+                                <Grid item xs={12} sm={12} md={'weaknesses' in cardData ? 6 : 12}>
                                     <ListItem sx={{ textAlign: 'center'}}>
                                         <ListItemText>
                                             <Typography variant='h4'>Resistances:</Typography>
@@ -204,10 +206,32 @@ const CardDescription = () => {
                     </GridItem>
                 </Grid>
                 { Object.keys(cardData.tcgplayer.prices).length > 0 && (
-                    <Grid item md={12}>
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
                         <GridItem className='block'>
-                            <Typography variant='h2' sx={{ display: 'flex', alignItems: 'center'}}>
-                            <StorefrontIcon sx={{ marginRight: 2, fontSize: 40}} />
+                            <Typography variant='h2' sx={{ display: 'flex', alignItems: 'center', textAlign: 'center'}}>
+                                <StorefrontIcon 
+                                    sx={{ 
+                                        marginRight: {
+                                            xs: 0,
+                                            sm: 0,
+                                            md: 2
+                                        },
+                                        position: {
+                                            xs: 'absolute',
+                                            sm: 'absolute',
+                                            md: 'inherit'
+                                        },
+                                        top: {
+                                            xs: 17,
+                                            sm: 17,
+                                        },
+                                        left: {
+                                            xs: 55,
+                                            sm: 55,
+                                        },
+                                        fontSize: 40
+                                    }} 
+                                />
                                 Market Information
                             </Typography>
                             <Grid container spacing={3}>

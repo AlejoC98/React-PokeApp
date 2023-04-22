@@ -93,10 +93,11 @@ const App = () => {
       navigate(`/Dashboard/${item.firstname + ' ' + item.lastname}`, {state : { data: item}});
     else
       navigate(`/CardSet/${item.name}`);
+  }
 
-    // navigate(window.location.pathname + '/' + [item.setname, item.name].join('/'));
-
-    // console.log("Socio", item);
+  const handleCloseSearch = () => {
+    setDisplayRes(false);
+    document.querySelector('#searchBar').value = '';
   }
 
   return (
@@ -105,8 +106,8 @@ const App = () => {
             <SearchIconWrapper>
                 <SearchIcon />
             </SearchIconWrapper>
-            <StyledInputBase placeholder="Search.." aria-label="search" onChange={handleSearch} onFocus={() => setDisplayRes(true)}/>
-            <IconButton onClick={() => setDisplayRes(false)}>
+            <StyledInputBase placeholder="Search.." aria-label="search" onChange={handleSearch} id='searchBar' onFocus={() => setDisplayRes(true)}/>
+            <IconButton onClick={handleCloseSearch}>
               <CloseIcon />
             </IconButton>
             { displayRes ? (
@@ -124,7 +125,7 @@ const App = () => {
                     }}
                 >
                     <List>
-                        { result.length > 0 ? result.map((res, ind) => (
+                        { result.length > 0 ? result.slice(0, 4).map((res, ind) => (
                             <ListItemButton key={`result-${ind}`} onClick={() => handleClick(res)}>
                                 <ListItemAvatar>
                                     <Avatar 
@@ -144,6 +145,13 @@ const App = () => {
                                 </ListItemText>
                             </ListItem>
                         ) }
+                        { result.length > 4 && (
+                          <ListItemButton>
+                            <ListItemText sx={{ textAlign: 'center'}}>
+                              View All
+                            </ListItemText>
+                          </ListItemButton>
+                        )}
                     </List>
                 </Box>
             ) : (

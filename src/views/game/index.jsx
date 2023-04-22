@@ -213,22 +213,22 @@ const Game = () => {
                             <Grid container spacing={2} alignItems='center'>
                                 <Grid item md={3}>
                                     <PlainGridItem>
-                                        <Typography variant="h4">Players : { state.playersList[state.turn].name }</Typography>
+                                        <Typography variant="h4" sx={{ color: '#e2615d'}}>Players : { state.playersList[state.turn].name }</Typography>
                                     </PlainGridItem>
                                 </Grid>
                                 <Grid item md={3}>
                                     <PlainGridItem>
-                                        <Typography variant="h4">Matches: { state.found.length } / { state.matches} </Typography>
+                                        <Typography variant="h4" sx={{ color: '#e2615d'}}>Matches: { state.found.length } / { state.matches} </Typography>
                                     </PlainGridItem>
                                 </Grid>
                                 <Grid item md={3}>
                                     <PlainGridItem>
-                                        <Typography variant="h4">Rounds: { state.currentRound } / { state.rounds }</Typography>
+                                        <Typography variant="h4" sx={{ color: '#e2615d'}}>Rounds: { state.currentRound } / { state.rounds }</Typography>
                                     </PlainGridItem>
                                 </Grid>
                                 <Grid item md={3}>
                                     <PlainGridItem>
-                                        <Button variant="contained" onClick={() => Navigate('/Dashboard')}>Exit</Button>
+                                        <Button variant="contained" color='danger' onClick={() => Navigate('/Dashboard')}>Exit</Button>
                                     </PlainGridItem>
                                 </Grid>
                             </Grid>

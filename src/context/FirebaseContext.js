@@ -31,53 +31,63 @@ const createFirebaseDocs = async() => {
 
 const getSearchDocs = async() => {
 
-    const response = [];
-    // Search users
-    const usersCollectionRef = collection(db, "users");
+    const searchData = JSON.parse(localStorage.getItem('searchData'));
+    let response = []; 
 
-    const uq = query(
-        usersCollectionRef,
-        where('email', '!=', auth.currentUser.email)
-    );
-
-
-    await getDocs(uq).then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-        // Extract the data from each document
-        const rescord = doc.data();
-        response.push(rescord);
+    if (searchData === null) {
+        // Search users
+        const usersCollectionRef = collection(db, "users");
+    
+        const uq = query(
+            usersCollectionRef,
+            where('email', '!=', auth.currentUser.email)
+        );
+    
+    
+        await getDocs(uq).then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+            // Extract the data from each document
+            const rescord = doc.data();
+            response.push(rescord);
+            });
         });
-    });
-
-    // Search sets
-    const setsCollectionRef = collection(db, "cardsets");
-
-    const sq = query(
-        setsCollectionRef,
-    );
-
-    await getDocs(sq).then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-        // Extract the data from each document
-        const rescord = doc.data();
-        response.push(rescord);
+    
+        // Search sets
+        const setsCollectionRef = collection(db, "cardsets");
+    
+        const sq = query(
+            setsCollectionRef,
+        );
+    
+        await getDocs(sq).then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+            // Extract the data from each document
+            const rescord = doc.data();
+            response.push(rescord);
+            });
         });
-    });
-
-    // Search cards
-    const cardsCollectionRef = collection(db, "cards");
-
-    const cq = query(
-        cardsCollectionRef,
-    );
-
-    await getDocs(cq).then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-        // Extract the data from each document
-        const rescord = doc.data();
-        response.push(rescord);
+    
+        // Search cards
+        const cardsCollectionRef = collection(db, "cards");
+    
+        const cq = query(
+            cardsCollectionRef,
+        );
+    
+        await getDocs(cq).then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+            // Extract the data from each document
+            const rescord = doc.data();
+            response.push(rescord);
+            });
         });
-    });
+    
+        if (response.length > 0 )
+            localStorage.setItem('searchData', JSON.stringify(response));
+
+    } else {
+        response = searchData;
+    }
 
     return response;
 

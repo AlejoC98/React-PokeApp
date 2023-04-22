@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { ColorModeContext, tokens } from "../../theme";
-import { useTheme, Box, IconButton, Avatar, MenuList, MenuItem, Popper, AppBar, Toolbar } from '@mui/material';
+import { useTheme, Box, IconButton, Avatar, MenuList, MenuItem, Popper, AppBar, Toolbar, FormGroup, FormControlLabel } from '@mui/material';
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import DialogComponent from "../../components/DialogComponent";
 import SearchBar from "../../components/SearchBar";
 import HamburgerMenu from "../../components/HamburgerMenu";
+import Switch from '@mui/material/Switch';
 
 const Topbar = ({setIsLoading}) => {
   // Setting const
@@ -20,12 +21,18 @@ const Topbar = ({setIsLoading}) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const id = open ? "user-menu" : undefined;
+  const [themeChecked, setThemeChecked] = useState(true);
 
    // Functions for user menu popper
   const handleClick = (event) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
   
+  const handleThemeSwitch = () => {
+    setThemeChecked(!themeChecked);
+    colorMode.toggleColorMode();
+  }
+
   const handleLogOut = async() => {
     await logOut().then((res) => {
       navigate('/Login');
@@ -92,6 +99,29 @@ const Topbar = ({setIsLoading}) => {
               </IconButton>
               <Popper id={id} open={open} anchorEl={anchorEl} sx={{ zIndex: 1000}}>
                 <MenuList sx={{ background: colors.spacecadet[600] }}>
+                  <MenuItem sx={{
+                    display: {
+                      xs: 'inline-flex',
+                      sm: 'none',
+                    }
+                  }}>
+                    <FormGroup>
+                      <FormControlLabel
+                        label='Theme'
+                        control={
+                          <Switch 
+                            checked={themeChecked}
+                            onClick={handleThemeSwitch}
+                            name='themeSwitch'
+                            color='warning'
+                            icon={<DarkModeOutlinedIcon />}
+                            checkedIcon={<LightModeOutlinedIcon />}
+                            size="large"
+                          />
+                        }
+                      />
+                    </FormGroup>
+                  </MenuItem>
                   <MenuItem>My Account</MenuItem>
                   <MenuItem>Awards</MenuItem>
                   <MenuItem onClick={handleLogOut}>Logout</MenuItem>
