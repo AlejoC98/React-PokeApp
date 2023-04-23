@@ -191,6 +191,14 @@ button.active {
     left: 0;
 }
 
+.alert-content {
+    position: absolute;
+    top: 0;
+    right: 10px;
+    width: 200px;
+    z-index: 1000;
+}
+
 /* Scrollbar */
 
 ::-webkit-scrollbar {

@@ -32,7 +32,7 @@ export const AuthContextProvider = ({ children }) => {
       // create new user data
       await CreateNewUserData(user, firstname, lastname, email, img_profile);
       // Return Status
-      return true;
+      return 'Please check your inbox to verify your email';
     }).catch((err) => {
       throw new Error(err);
     });
@@ -85,6 +85,7 @@ export const AuthContextProvider = ({ children }) => {
 
   const CreateNewUserData = async (user, firstname, lastname, email, img_profile) => {
     let upload_img;
+    const user_id = Array.from({length: 20}, () => Math.random().toString(36)[2] || Math.floor(Math.random() * 20)).join('');
 
     const q = query(collection(db, 'users'), where('email', '==', email));
 
@@ -96,9 +97,9 @@ export const AuthContextProvider = ({ children }) => {
           contentType: 'image/jpeg'
         }
 
-        var uniqueImgName = [firstname, lastname].join("_") + new Date();
+        var uniqueImgName = [firstname, lastname].join("_") + user_id;
         // Upload file and metadata to the object 'images/mountains.jpg'
-        const storageRef = ref(storage, 'images/' + uniqueImgName);
+        const storageRef = ref(storage, 'users_profiles/' + uniqueImgName);
         // const uploadTask = await uploadBytesResumable(storageRef, img_profile.buffer, metadata);
         const uploadTask = await uploadBytesResumable(storageRef, img_profile, metadata);
 
@@ -106,14 +107,13 @@ export const AuthContextProvider = ({ children }) => {
       } else {
         upload_img = img_profile;
       }
-
-
     } else {
       upload_img = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pngall.com%2Fprofile-png%2Fdownload%2F51525&psig=AOvVaw2Cy-FavCzDKct1N41XorEC&ust=1676560375535000&source=images&cd=vfe&ved=0CA8QjRxqFwoTCLiomZ_ol_0CFQAAAAAdAAAAABAE";
     }
 
-    if (querySnapshot.docs.length === 0) {
+    if (querySnapshot.docs.length === 0) {      
       await addDoc(collection(db, "users"), {
+        id: user_id,
         email: email,
         firstname: firstname,
         lastname: lastname,

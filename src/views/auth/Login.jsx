@@ -59,8 +59,7 @@ const Login = () => {
   return (
     <Box position='relative'>
       <Notification status={error.status} message={error.message} />
-      <Box position='relative' top={70}>
-        <Typography variant='h1' sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 3 }}>
+      <Typography variant='h1' mt={9} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 3 }}>
           <LockIcon sx={{ fontSize: 33, color: colors.midnightgreen[400] }} /> Log In
         </Typography>
         <Formik
@@ -150,7 +149,6 @@ const Login = () => {
             Forgot Password?
           </Button>
         </Box>
-      </Box>
     </Box>
   )
 }

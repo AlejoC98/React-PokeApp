@@ -90,7 +90,7 @@ const App = () => {
     if ('setname' in item)
       navigate(`/CardSet/${item.setname}/${item.name}`);
     else if ('firstname' in item)
-      navigate(`/Dashboard/${item.firstname + ' ' + item.lastname}`, {state : { data: item}});
+      navigate(`/Dashboard/${item.id}`, {state : { data: item}});
     else
       navigate(`/CardSet/${item.name}`);
   }

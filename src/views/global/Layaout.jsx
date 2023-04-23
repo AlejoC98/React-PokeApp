@@ -46,7 +46,7 @@ const AppLayaout = () => {
               padding: '20px 10px'
             }}
           >
-            <TopBar setIsLoading={setIsLoading} />            
+            <TopBar setIsLoading={setIsLoading} />
             <Outlet />
           </main>
         </div>
@@ -69,9 +69,40 @@ const AuthLayout = () => {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
           <CssBaseline />
-          <Box display="flex" justifyContent="center" alignItems="center" minHeight='100vh'>
-            <Box display="flex" top={0} bottom={0} left={0} right={0} position="absolute" sx={{ backgroundImage: 'url(/static/images/login-wallpaper.jpg)', backgroundSize: "cover", backgroundPosition: 'bottom right', backgroundRepeat: 'no-repeat' , filter: 'blur(3px)' }}></Box>
-            <Box display="flex" p={5} pt={0} flexDirection="column" borderRadius={2} width={400} zIndex={1000} sx={{ backdropFilter: "initial", WebkitBackdropFilter: "blur(10px)", background: 'RGBA(51,51,51,0.42)' }} className='animate__animated animate__fadeInUp' height='53%'>
+          <Box 
+            display="flex" 
+            justifyContent="center" 
+            alignItems="center" 
+            minHeight='100vh'
+          >
+            <Box 
+              display="flex" 
+              top={0} 
+              bottom={0} 
+              left={0} 
+              right={0} 
+              position="absolute" 
+              sx={{ 
+                backgroundImage: 'url(/static/images/login-wallpaper.jpg)', 
+                backgroundSize: "cover", 
+                backgroundPosition: 'bottom right', 
+                backgroundRepeat: 'no-repeat', 
+                filter: 'blur(3px)'
+              }} />
+            <Box 
+              display="flex" 
+              p={5} 
+              pt={0} 
+              flexDirection="column"
+              borderRadius={2} 
+              width={400} 
+              zIndex={1000}
+              sx={{ 
+                backdropFilter: "initial", 
+                WebkitBackdropFilter: "blur(10px)", 
+                background: 'RGBA(51,51,51,0.42)',
+              }} 
+              className='animate__animated animate__fadeInUp'>
               <Outlet />
             </Box>
           </Box>

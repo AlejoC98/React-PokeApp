@@ -84,6 +84,17 @@ export const tokens = (mode) => ({
         800: "#3e4644",
         900: "#1f2322"
       },
+      moonstone: {
+        100: "#ddf0f5",
+        200: "#bae1ea",
+        300: "#98d1e0",
+        400: "#75c2d5",
+        500: "#53b3cb",
+        600: "#428fa2",
+        700: "#326b7a",
+        800: "#214851",
+        900: "#112429"
+    },
     } : {
         orange: {
             100: "#fce6d3",
@@ -162,6 +173,17 @@ export const tokens = (mode) => ({
         800: "#d7dfdd",
         900: "#ebefee",
     },
+    moonstone: {
+      100: "#112429",
+      200: "#214851",
+      300: "#326b7a",
+      400: "#428fa2",
+      500: "#53b3cb",
+      600: "#75c2d5",
+      700: "#98d1e0",
+      800: "#bae1ea",
+      900: "#ddf0f5",
+  },
       }),
 });
 
@@ -187,7 +209,7 @@ export const themeSettings = (mode) => {
               main: colors.yellow[500]
             },
             info: {
-              main: colors.midnightgreen[500]
+              main: colors.moonstone[500]
             },
             neutral: {
               dark: colors.orange[700],

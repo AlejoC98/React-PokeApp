@@ -56,8 +56,8 @@ const HamburgerMenu = ({ setIsLoading, poperOpen }) => {
                 <Box ml={2}>
                     <DialogComponent title='Create New Game' buttonText={'Create'} innerModule='./NewGameFormComponent' setIsLoading={setIsLoading} setOpenMenu={setOpen} />   
                 </Box>
-                <IconButton >
-                    <CloseIcon onClick={() => setOpen(false)} />
+                <IconButton onClick={() => setOpen(false)}>
+                    <CloseIcon />
                 </IconButton>
             </Box>
             <Box display='flex' justifyContent='center'>

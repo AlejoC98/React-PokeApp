@@ -4,7 +4,7 @@ import { GridItem } from "../../theme";
 // import { createFirebaseDocs } from "../../context/FirebaseContext";
 // import { useEffect } from "react";
 
-const Dashboard = () => {
+const Dashboard = ({ setAler }) => {
 
   // useEffect(() => {
   //   createFirebaseDocs();

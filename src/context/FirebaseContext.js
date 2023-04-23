@@ -1,4 +1,4 @@
-import { collection, getDocs, where, query, addDoc, deleteDoc, doc } from "firebase/firestore";
+import { collection, getDocs, where, query, addDoc, deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { auth, db } from "../firebase";
 import { GetCardSet } from "./PokemonContext";
 
@@ -32,25 +32,9 @@ const createFirebaseDocs = async() => {
 const getSearchDocs = async() => {
 
     const searchData = JSON.parse(localStorage.getItem('searchData'));
-    let response = []; 
+    let response = [];
 
     if (searchData === null) {
-        // Search users
-        const usersCollectionRef = collection(db, "users");
-    
-        const uq = query(
-            usersCollectionRef,
-            where('email', '!=', auth.currentUser.email)
-        );
-    
-    
-        await getDocs(uq).then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-            // Extract the data from each document
-            const rescord = doc.data();
-            response.push(rescord);
-            });
-        });
     
         // Search sets
         const setsCollectionRef = collection(db, "cardsets");
@@ -86,8 +70,25 @@ const getSearchDocs = async() => {
             localStorage.setItem('searchData', JSON.stringify(response));
 
     } else {
-        response = searchData;
+        response = [...response, ...searchData];
     }
+
+     // Search users
+     const usersCollectionRef = collection(db, "users");
+
+     const uq = query(
+         usersCollectionRef,
+         where('email', '!=', auth.currentUser.email)
+     );
+ 
+ 
+     await getDocs(uq).then((querySnapshot) => {
+         querySnapshot.forEach((doc) => {
+         // Extract the data from each document
+         const rescord = doc.data();
+         response.push(rescord);
+         });
+     });
 
     return response;
 
@@ -95,11 +96,11 @@ const getSearchDocs = async() => {
 
 const updateFavorites = async(favorites) => {
 
-    const user = auth.currentUser.email;
+    const user = auth.currentUser;
 
     const favoritesCollectionRef = collection(db, 'user_favorites');
 
-    const q = query(favoritesCollectionRef, where('email', '==', user));
+    const q = query(favoritesCollectionRef, where('user', '==', user.email));
 
     let response = [];
 
@@ -112,7 +113,7 @@ const updateFavorites = async(favorites) => {
     
                 if (fire === undefined) {
                     await addDoc(collection(db, "user_favorites"), {
-                        email: user,
+                        user: user.email,
                         fav_id: fav,
                     });
                 } else {
@@ -139,4 +140,126 @@ const updateFavorites = async(favorites) => {
     return response;
 }
 
-export { getSearchDocs, updateFavorites, createFirebaseDocs }
+const sendFriendRequest = async(user) => {
+
+    let response;
+    const userFriendRequestRef = collection(db, 'user_friends');
+    const senderData = await queryCollection('users', [{field: 'email', operator: '==', value: auth.currentUser.email}]);
+
+    try {
+
+        createUserNotifications({user: user.email, title: 'New friend Request', text: `${user.firstname} ${user.lastname} wants to be your friend!`, link: senderData.id, status: false});
+    
+        await addDoc(userFriendRequestRef, {
+            user: auth.currentUser.email,
+            friend: user.email,
+            status: false,
+        });
+
+        response = 'Request Sent';
+    } catch (error) {
+        response = error.message;
+    }
+
+    return response;
+}
+
+const getUserNotification = async() => {
+
+    const userNotificationRef = collection(db, 'user_notifications');
+
+    let notifications = [];
+
+    const q = query(
+        userNotificationRef,
+        where('user', '==', auth.currentUser.email),
+    );
+
+    await getDocs(q).then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+            const rescord = doc.data();
+            rescord['record_id'] = doc.id;
+            notifications.push(rescord);
+        });
+    });
+    
+    return notifications;
+}
+
+const queryCollection = async(model, filters) => {
+    // Search users
+    let usersCollectionRef = collection(db, model);
+    let response;
+
+    filters.forEach((filt) => {
+        usersCollectionRef = query(usersCollectionRef, where(filt.field, filt.operator, filt.value));
+    });
+
+
+    await getDocs(usersCollectionRef).then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+
+            response = doc.data();
+
+            response['record_id'] = doc.id;
+
+        });
+    });
+
+    return response;
+}
+
+const updateCollection = async(model, record, fields) => {
+
+    // const updateRef = collection(db, model, filter);
+    const updateRef = doc(db, model, record);
+
+    let response;
+
+    await updateDoc(updateRef, {
+        ...fields
+    }).then(() => {
+        response = true;
+    }).catch((err) => {
+        throw new Error(err.message);
+    });
+
+    return response
+}
+
+const deleteCollection =async(model, record) => {
+    const deleteRef = doc(db, model, record);
+
+    let response;
+
+    await deleteDoc(deleteRef).then(() => {
+        response = true;
+    }).catch((err) => {
+        throw new Error(err.message);
+    });
+
+    return response;
+}
+
+const createUserNotifications = async(data) => {
+    const userNotificationRef = collection(db, 'user_notifications');
+    let response;
+
+    try {
+        await addDoc(userNotificationRef, {
+            user: data.user,
+            title: data.title,
+            text: data.text,
+            link: data.link,
+            status: data.status
+        });
+
+        response = true;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+
+    return response;
+}
+
+export { getSearchDocs, updateFavorites, createFirebaseDocs, sendFriendRequest, getUserNotification, queryCollection, updateCollection, createUserNotifications, deleteCollection }

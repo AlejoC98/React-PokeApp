@@ -8,8 +8,9 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { PhotoCamera } from '@mui/icons-material';
 import { UserAuth } from '../../context/AuthContext';
-import { useNavigate } from 'react-router-dom'
+// import { useNavigate } from 'react-router-dom'
 import SocialMediaButtons from '../../components/SocialMediaButtons'
+import Notification from '../../components/Notification'
 
 const initialValues = {
     firstName: '',
@@ -28,25 +29,29 @@ const registerSchema = yup.object().shape({
 const SignIn = () => {
 
     const [imageUpload, setImageUpload] = useState();
-
     const { createUser } = UserAuth();
-
     const fileInput = useRef();
-
-    const navigate = useNavigate();
-
-    const handleSubmit = async (values, event) => {
+    // const navigate = useNavigate();
+    const [showPassword, setShowPassword] = useState(false);
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
+    const [error, setError] = useState({});
+    
+    const handleSubmit = async (values, {resetForm}) => {
         // await createUser(values.firstName, values.lastName, values.email, values.password, imageUpload);
         await createUser(values.firstName, values.lastName, values.email, values.password, fileInput.current.files[0]).then((res) => {
-            (res === true) ? navigate("/") : event.preventDefault();            
+            resetForm();
+            setError({
+                status: 'success',
+                message: res
+            });
+            // (res === true) ? navigate("/") : event.preventDefault();
         }).catch((err) => {
-            console.log(err);
+            setError({
+                status: 'error',
+                message: err.message
+            });
         });
     }
-
-    const [showPassword, setShowPassword] = useState(false);
-
-    const handleClickShowPassword = () => setShowPassword((show) => !show);
 
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
@@ -70,8 +75,9 @@ const SignIn = () => {
     const isNonMobile = useMediaQuery("(min-width:600px)");
 
     return (
-        <Box>
-            <Typography variant='h1' textAlign='center' mb={3}>Sign In</Typography>
+        <Box position='relative'>
+            <Notification status={error.status} message={error.message} />
+            <Typography variant='h1' textAlign='center' mb={3} mt={9}>Sign In</Typography>
             <Formik
                 onSubmit={handleSubmit}
                 initialValues={initialValues}

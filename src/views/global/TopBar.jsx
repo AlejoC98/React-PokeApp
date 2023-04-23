@@ -1,6 +1,6 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ColorModeContext, tokens } from "../../theme";
-import { useTheme, Box, IconButton, Avatar, MenuList, MenuItem, Popper, AppBar, Toolbar, FormGroup, FormControlLabel } from '@mui/material';
+import { useTheme, Box, IconButton, Avatar, MenuList, MenuItem, Popper, AppBar, Toolbar, FormGroup, FormControlLabel, Typography } from '@mui/material';
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
@@ -10,6 +10,9 @@ import DialogComponent from "../../components/DialogComponent";
 import SearchBar from "../../components/SearchBar";
 import HamburgerMenu from "../../components/HamburgerMenu";
 import Switch from '@mui/material/Switch';
+import { getUserNotification, updateCollection } from "../../context/FirebaseContext";
+import Badge from '@mui/material/Badge';
+import PersonIcon from '@mui/icons-material/Person';
 
 const Topbar = ({setIsLoading}) => {
   // Setting const
@@ -18,14 +21,29 @@ const Topbar = ({setIsLoading}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
-  const id = open ? "user-menu" : undefined;
   const [themeChecked, setThemeChecked] = useState(true);
+  
+  // Setting for the user poper
+  const [userAnchorEl, setUserAnchorEl] = useState(null);
+  const userOpen = Boolean(userAnchorEl);
+  const userId = userOpen ? "user-menu" : undefined;
+  // Setting fot the notification poper
+  const [notiAnchorEl, setNotiAnchorEl] = useState(null);
+  const notiOpen = Boolean(notiAnchorEl);
+  const notiId = notiOpen ? "notification-menu" : undefined;
 
-   // Functions for user menu popper
-  const handleClick = (event) => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
+  // Notifications
+  const [notifications, setnotifications] = useState([]);
+
+  // Functions for user menu popper
+  const handleUserClick = (event) => {
+    setUserAnchorEl(userAnchorEl ? null : event.currentTarget);
+    setNotiAnchorEl(null);
+  };
+  // Functions for user notification popper
+  const handleNotiClick = (event) => {
+    setNotiAnchorEl(notiAnchorEl ? null : event.currentTarget);
+    setUserAnchorEl(null);
   };
   
   const handleThemeSwitch = () => {
@@ -40,6 +58,26 @@ const Topbar = ({setIsLoading}) => {
       console.log(err);
     })
   };
+
+  const handleOpenNoti = (notification) => {
+    setNotiAnchorEl(null);
+    updateCollection('user_notifications', notification.record_id, {status: true} ).then((res) => {
+      notification.status = true;
+      if (res)
+        navigate(`Dashboard/${notification.link}`, {state: {...notification}});
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
+
+  useEffect(() => {
+    setInterval(() => {
+      getUserNotification().then((res) => {
+        if (res.length > 0)
+          setnotifications(res);
+      });
+    }, 300000);
+  }, []);
 
 
   return (
@@ -84,9 +122,41 @@ const Topbar = ({setIsLoading}) => {
                   <DarkModeOutlinedIcon />
                 )}
               </IconButton>
-              <IconButton>
-                <NotificationsOutlinedIcon />
+              <IconButton onClick={handleNotiClick}>
+                <Badge badgeContent={notifications.filter(n => n.status === false).length} color="danger">
+                  <NotificationsOutlinedIcon />
+                </Badge>
               </IconButton>
+              <Popper id={notiId} open={notiOpen} anchorEl={notiAnchorEl} sx={{ zIndex: 1000, p: 2}}>
+                <MenuList sx={{ background: colors.spacecadet[600], borderRadius: 1}}>
+                  { notifications.length > 0 ? notifications.map((noty, ind) => (
+                    <MenuItem 
+                      key={`noty-${ind}`} 
+                      sx={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        maxWidth: 180,
+                        overflow: 'hidden',
+                        p: 1
+                      }}
+                      onClick={() => handleOpenNoti(noty)}
+                    >
+                      <PersonIcon sx={{
+                        position: 'relative',
+                        top: -3,
+                        mr: 0.5
+                      }}/>
+                      <Typography>
+                        { noty.text }
+                      </Typography>
+                    </MenuItem>
+                  )) : (
+                    <MenuItem>
+                      <Typography>Nothing to check yet!</Typography>
+                    </MenuItem>
+                  ) }
+                </MenuList>
+              </Popper>
             </Box>
             <Box sx={{
               marginRight: {
@@ -94,11 +164,11 @@ const Topbar = ({setIsLoading}) => {
                 sm: 1
               }
             }}>
-              <IconButton aria-describedby={id} onClick={handleClick}>
+              <IconButton aria-describedby={userId} onClick={handleUserClick}>
                 <Avatar alt={user !== null ? user.displayName : "temp"} src={user !== null ? user.photoURL : "http://"} />
               </IconButton>
-              <Popper id={id} open={open} anchorEl={anchorEl} sx={{ zIndex: 1000}}>
-                <MenuList sx={{ background: colors.spacecadet[600] }}>
+              <Popper id={userId} open={userOpen} anchorEl={userAnchorEl} sx={{ zIndex: 1000}}>
+                <MenuList sx={{ background: colors.spacecadet[600], borderRadius: 1 }}>
                   <MenuItem sx={{
                     display: {
                       xs: 'inline-flex',
@@ -128,7 +198,7 @@ const Topbar = ({setIsLoading}) => {
                 </MenuList>
               </Popper>
             </Box>
-            <HamburgerMenu setIsLoading={setIsLoading} poperOpen={handleClick} />
+            <HamburgerMenu setIsLoading={setIsLoading} poperOpen={handleUserClick} />
           </Box>
         </Toolbar>
       </AppBar>
