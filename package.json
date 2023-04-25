@@ -1,6 +1,10 @@
 {
   "name": "pokeapp",
   "version": "0.1.0",
+  "engines": {
+    "node": ">=19.7.0",
+    "npm": ">=9.5.0"
+  },
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.10.6",
