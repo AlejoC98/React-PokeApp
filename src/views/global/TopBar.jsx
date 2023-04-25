@@ -71,13 +71,14 @@ const Topbar = ({setIsLoading}) => {
   }
 
   useEffect(() => {
-    setInterval(() => {
-      getUserNotification().then((res) => {
-        if (res.length > 0)
-          setnotifications(res);
-      });
-    }, 300000);
-  }, []);
+    if (user)
+      setInterval(() => {
+        getUserNotification().then((res) => {
+          if (res.length > 0)
+            setnotifications(res);
+        });
+      }, 300000);
+  }, [user]);
 
 
   return (
@@ -192,8 +193,15 @@ const Topbar = ({setIsLoading}) => {
                       />
                     </FormGroup>
                   </MenuItem>
-                  <MenuItem>My Account</MenuItem>
-                  <MenuItem>Awards</MenuItem>
+                  <MenuItem onClick={() => {
+                      navigate(`Dashboard/${user.id}`, {state: {link: user.id}});
+                      setUserAnchorEl(null);
+                    }
+                  }
+                  >
+                    My Account
+                  </MenuItem>
+                  {/* <MenuItem>Awards</MenuItem> */}
                   <MenuItem onClick={handleLogOut}>Logout</MenuItem>
                 </MenuList>
               </Popper>

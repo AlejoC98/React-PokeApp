@@ -11,7 +11,7 @@ const BreadCrumb = ({ name = '' }) => {
         <Box display='block' width='100%'>
             <Breadcrumbs aria-label='BreadCrumb'>
                 { urlPath.map((param, index) => (
-                    <Typography key={index} sx={{ display: 'flex'}}>{ param === '' ? <HomeIcon fontSize="small" /> : param.replace(/%20/g, ' ') }</Typography>
+                    <Typography variant='h4' key={index} sx={{ display: 'flex'}}>{ param === '' ? <HomeIcon fontSize="medium" /> : param.replace(/%20/g, ' ') }</Typography>
                 ))}
             </Breadcrumbs>
         </Box>

@@ -304,6 +304,16 @@ export const GridItem = styled(Paper)(({ theme }) => ({
   color: theme.palette.mode === 'dark' ? theme.palette.text.secondary : '#ffffff',
 }));
 
+export const PlainGridItem = styled(Paper)(({ theme }) => ({
+  backgroundColor: 'transparent',
+  boxShadow: 'none',
+  padding: theme.spacing(0.5),
+}));
+
+export const GridContent = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(2),
+}));
+
 // export const GridItem = styled(Paper)(({ theme }) => ({
 //   backgroundColor: theme.palette.mode === 'dark' ? '#191a26' : '#3e4644',
 //   ...theme.typography.body2,
