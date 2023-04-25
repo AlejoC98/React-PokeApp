@@ -17,6 +17,7 @@ import { collection, addDoc, where, getDocs, query } from "firebase/firestore";
 import { auth, storage, db } from "../firebase";
 
 import { GoogleAuthProvider, FacebookAuthProvider } from "firebase/auth";
+import { queryCollection } from "./FirebaseContext";
 
 export const UserContext = createContext();
 
@@ -49,13 +50,19 @@ export const AuthContextProvider = ({ children }) => {
 
   // Log Out function
   const logOut = () => {
+    console.log(auth);
     return signOut(auth);
   }
 
   // function to check if user was or is logged
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      currentUser !== null ? currentUser.emailVerified === true ? setUser(currentUser) : setUser(null) : setUser(currentUser);
+      queryCollection('users', [
+        {field: 'email', operator: '==', value: currentUser.email}
+      ]).then((res) => {
+        currentUser['id'] = res.id;
+        currentUser !== null ? currentUser.emailVerified === true ? setUser(currentUser) : setUser(null) : setUser(currentUser);
+      });
     });
 
     return () => {

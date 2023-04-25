@@ -1,20 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Card, CardActionArea, CardContent, CardMedia, ListItem, ListItemButton, ListItemText, Typography, useTheme } from '@mui/material';
+import { Box, Button, Card, CardActionArea, CardContent, CardMedia, Grid, List, ListItem, ListItemButton, ListItemText, Typography, IconButton  } from '@mui/material';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
-import { tokens } from '../theme';
 import { useNavigate } from 'react-router-dom';
 import BreadCrumb from './BreadCrumb';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
 import GradeIcon from '@mui/icons-material/Grade';
 import { updateFavorites } from '../context/FirebaseContext';
+import { styled } from '@mui/material/styles';
 // import { GetCardSet } from '../context/PokemonContext';
 
-const DisplayItems = ({ data, display = 'list-view'}) => {
+const ViewButtons = styled(Button)(() => ({
+    backgroundColor: '#c4cecb', 
+    color: '#fff', 
+    border: `1px solid #7d8b87`, 
+    borderRadius: 3,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    '&:hover' : {
+        backgroundColor: '#ebefee'
+    }
+}));
+
+const DisplayItems = ({ data, display = 'list-view', breadcrumb = true}) => {
 
     const [active, setActive] = useState(display);
-    const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
 
     const [favoritesDisplay, setFavoritesDisplay] = useState([]);
     const [favoritesUpdate, setFavoritesUpdate] = useState([]);
@@ -26,9 +37,13 @@ const DisplayItems = ({ data, display = 'list-view'}) => {
             setActive(btn);
     }
 
-    const handleOpen = (setName) => {
-        // navigate(window.location.pathname + '/' + setId);
-        navigate(window.location.pathname + '/' + setName);
+    const handleOpen = (item) => {
+
+        if (window.location.pathname.includes('CardSet')) {
+            navigate(window.location.pathname + '/' + item.name)
+        } else {
+            'cardset_id' in item ? navigate('/CardSet/' + item.setname + '/' + item.name) : navigate('/CardSet/' + item.name);
+        }
     }
 
     const handleFavorite = (ele) => {
@@ -52,136 +67,91 @@ const DisplayItems = ({ data, display = 'list-view'}) => {
         });
     }, [favoritesUpdate]);
 
-    const ItemsList = () => {
-        const ItemsLoop = [];
-        if (data !== undefined) {
-            data.forEach((element, index) => {
-                // ItemsLoop.push(<p>{element.name}</p>);
-                ItemsLoop.push(
-                    <ListItem key={index} sx={{ padding: 0}} className='list-items'>
-                        <Button 
-                            color='warning' 
-                            className='fav-btn' 
-                            onClick={() => handleFavorite(element.id)} 
-                            sx={{
-                                display: favoritesDisplay.includes(element.id) ? 'block' : 'none'
-                            }}
-                        >
-                            { favoritesDisplay.includes(element.id) ? (
-                                <GradeIcon />
-                                ) : (
-                                <StarBorderIcon />
-                            ) }
-                        </Button>
-                        <ListItemButton sx={{ padding: '8px 0', left: favoritesDisplay.includes(element.id) ? 0 : 65}} onClick={() => handleOpen(element.name, element.name)}>
-                            <ListItemText>{element.name}</ListItemText>
-                        </ListItemButton>
-                    </ListItem>
-                );
-            });
-
-            return (
-                <Box>
-                    { ItemsLoop}
+    return (
+        <Box>
+            <Box display='flex' justifyContent={breadcrumb ? 'center' : 'end'} alignItems='center' mb={4}>
+                {breadcrumb === true && (
+                    <BreadCrumb />
+                )}
+                <Box display='flex' justifyContent='space-around' width={150}>
+                    <ViewButtons className={active === 'list-view' ? 'active' : ''}  onClick={() => handleActive('list-view')}>
+                        <ViewListIcon />
+                    </ViewButtons>
+                    <ViewButtons className={active === 'grid-view' ? 'active' : ''} onClick={() => handleActive('grid-view')}>
+                        <ViewModuleIcon />
+                    </ViewButtons>
                 </Box>
-            );
-        }
-    }
-
-    const ItemsGrid = () => {
-        const ItemsLoop = [];
-        if (data !== undefined) {
-            data.forEach((element, index) => {
-                // ItemsLoop.push(<p>{element.name}</p>);
-                ItemsLoop.push(
-                    <Card key={index} sx={{ width: 250, margin: 1, position: 'relative'}} className='cardElement'>
-                            <Button color='warning' className='fav-btn' onClick={() => handleFavorite(element.id)} sx={{ position: 'absolute', right: 0, display: favoritesDisplay.includes(element.id) ? 'block' : 'none' }}>
+            </Box>
+            
+            { active === 'list-view' ? (
+                <Grid container spacing={4}>
+                    {data.map((element) => (
+                        <Grid item xs={12} sm={6} md={4} lg={2} key={element.id}>
+                            <Card sx={{
+                                height: 180,
+                                ':hover > .fav-btn': {
+                                    display: 'inline-flex !important'
+                                }
+                            }}>
+                                <IconButton  
+                                    color='warning' 
+                                    className='fav-btn' 
+                                    onClick={() => handleFavorite(element.id)}
+                                    sx={{
+                                        display: favoritesDisplay.includes(element.id) ? 'inline-flex' : 'none'
+                                    }}
+                                >
+                                    {favoritesDisplay.includes(element.id) ? (
+                                        <GradeIcon />
+                                    ) : (
+                                        <StarBorderIcon />
+                                    )}
+                                </IconButton >
+                                <CardActionArea onClick={() => handleOpen(element)} sx={{ height: '100%'}}>
+                                    <CardMedia 
+                                        component='img'
+                                        alt={element.name}
+                                        height={100}
+                                        image={'logo' in element.images ? element.images.logo : element.images.small}
+                                        sx={{ objectFit: 'contain', padding: '0.5em'}}
+                                    />
+                                    <CardContent>
+                                    <Typography variant='h3' sx={{ textAlign: 'center'}}>
+                                        { element.name }
+                                    </Typography>
+                                    </CardContent>
+                                </CardActionArea>
+                            </Card>
+                        </Grid>
+                    ))}
+                </Grid>
+            ) : (
+                <List>
+                    { data.map((element) => (
+                        <ListItem key={element.id} className='list-items'>
+                            <Button 
+                                color='warning' 
+                                className='fav-btn' 
+                                onClick={() => handleFavorite(element.id)} 
+                                sx={{
+                                    display: favoritesDisplay.includes(element.id) ? 'block' : 'none',
+                                    position: 'relative !important'
+                                }}
+                            >
                                 { favoritesDisplay.includes(element.id) ? (
                                     <GradeIcon />
                                     ) : (
                                     <StarBorderIcon />
                                 ) }
                             </Button>
-                        <CardActionArea sx={{ height: '100%'}} onClick={() => handleOpen(element.name, element.name)}>
-                            <CardMedia
-                                component='img'
-                                alt={element.name}
-                                height={100}
-                                image={'logo' in element.images ? element.images.logo : element.images.small}
-                                sx={{ objectFit: 'contain', padding: '0.5em'}}
-                            />
-                            <CardContent>
-                                <Typography variant='h3' sx={{ textAlign: 'center'}}>
-                                    {element.name}
-                                </Typography>
-                            </CardContent>
-                        </CardActionArea>
-                    </Card>
-                );
-            });
+                            <ListItemButton sx={{ padding: '8px 0', left: favoritesDisplay.includes(element.id) ? 0 : 65}} onClick={() => handleOpen(element)}>
+                                <ListItemText>{element.name}</ListItemText>
+                            </ListItemButton>
+                        </ListItem>
+                    ))}
+                </List>
+            )}
 
-            return (
-                <Box display='flex' justifyContent='space-around' minHeight='100vh' flexWrap='wrap'>
-                    { ItemsLoop }
-                </Box>
-            );
-        }
-    }
-
-    return (
-        <Box 
-            position='relative'
-            width='100%'
-        >
-            <Box 
-                display='flex'
-                justifyContent='space-between'
-                alignItems='center'
-                width='100%'
-            >
-                <BreadCrumb />
-                <Box display='flex' justifyContent='space-around' width={75}>
-                    <button 
-                        className={active === 'list-view' ? 'active' : ''} 
-                        style={{ 
-                            backgroundColor: colors.gray[300], 
-                            color: '#fff', 
-                            border: `1px solid ${colors.gray[600]}`, 
-                            borderRadius: 3, 
-                            cursor: active === 'list-view' ? 'default' : 'pointer',
-                            marginRight: 5,
-                            '&:hover' : {
-                                backgroundColor: colors.gray[100]
-                            }
-                        }} 
-                        onClick={() => handleActive('list-view')}
-                    >
-                        <ViewListIcon />
-                    </button>
-                    <button 
-                        className={active === 'grid-view' ? 'active' : ''} 
-                        id='grid-view' 
-                        style={{ 
-                            backgroundColor: colors.gray[300], 
-                            color: '#fff', 
-                            border: `1px solid ${colors.gray[600]}`, 
-                            borderRadius: 3, 
-                            cursor: active === 'grid-view' ? 'default' : 'pointer',
-                            '&:hover' : {
-                                backgroundColor: colors.gray[100]
-                            }
-                        }} 
-                        onClick={() => handleActive('grid-view')}
-                    >
-                        <ViewModuleIcon />
-                    </button>
-                </Box>            
-            </Box>            
-                { active === 'list-view' ? (
-                    <ItemsList />
-                ) : (
-                    <ItemsGrid />
-                ) }            
         </Box>
     )
 }

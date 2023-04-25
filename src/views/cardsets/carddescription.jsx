@@ -254,7 +254,7 @@ const CardDescription = () => {
                                             </TableHead>
                                             <TableBody>
                                                 <TableRow>
-                                                    { Object.values('holofoil' in cardData.tcgplayer.prices ? cardData.tcgplayer.prices.holofoil : 'unlimitedHolofoil' in cardData.tcgplayer.prices ? cardData.tcgplayer.prices.unlimitedHolofoil : cardData.tcgplayer.prices.normal).map((price, ind) => (
+                                                    { Object.values('holofoil' in cardData.tcgplayer.prices ? cardData.tcgplayer.prices.holofoil : 'unlimitedHolofoil' in cardData.tcgplayer.prices ? cardData.tcgplayer.prices.unlimitedHolofoil : '1stEdition' in cardData.tcgplayer.prices ? cardData.tcgplayer.prices['1stEdition'] : cardData.tcgplayer.prices.normal).map((price, ind) => (
                                                         <TableCell key={`price-${ind}`}>
                                                             ${ price }
                                                         </TableCell>

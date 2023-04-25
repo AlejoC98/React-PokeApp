@@ -192,8 +192,15 @@ const Topbar = ({setIsLoading}) => {
                       />
                     </FormGroup>
                   </MenuItem>
-                  <MenuItem>My Account</MenuItem>
-                  <MenuItem>Awards</MenuItem>
+                  <MenuItem onClick={() => {
+                      navigate(`Dashboard/${user.id}`, {state: {link: user.id}});
+                      setUserAnchorEl(null);
+                    }
+                  }
+                  >
+                    My Account
+                  </MenuItem>
+                  {/* <MenuItem>Awards</MenuItem> */}
                   <MenuItem onClick={handleLogOut}>Logout</MenuItem>
                 </MenuList>
               </Popper>

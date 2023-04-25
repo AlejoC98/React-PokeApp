@@ -1,8 +1,8 @@
 import React, { useEffect, useReducer } from 'react'
 import { Box, Button, Grid, Typography } from "@mui/material";
-import { styled } from '@mui/material/styles';
-import Paper from '@mui/material/Paper';
-import { GridItem } from "../../theme";
+// import { styled } from '@mui/material/styles';
+// import Paper from '@mui/material/Paper';
+import { GridItem, PlainGridItem } from "../../theme";
 import { useLocation, useNavigate } from "react-router-dom";
 import CardsElements from "../../components/CardsElements";
 import { SetUpGame } from '../../context/PokemonContext';
@@ -119,12 +119,12 @@ function reducer(state, action) {
     }
 }
 
-const PlainGridItem = styled(Paper)(({ theme }) => ({
-    backgroundColor: 'transparent',
-    boxShadow: 'none',
-    padding: theme.spacing(0.5),
-    textAlign: 'center'
-}));
+// const PlainGridItem = styled(Paper)(({ theme }) => ({
+//     backgroundColor: 'transparent',
+//     boxShadow: 'none',
+//     padding: theme.spacing(0.5),
+//     textAlign: 'center'
+// }));
 
 const Game = () => {
 
@@ -212,22 +212,22 @@ const Game = () => {
                             </Box>
                             <Grid container spacing={2} alignItems='center'>
                                 <Grid item md={3}>
-                                    <PlainGridItem>
+                                    <PlainGridItem sx={{ textAlign: 'center'}}>
                                         <Typography variant="h4" sx={{ color: '#e2615d'}}>Players : { state.playersList[state.turn].name }</Typography>
                                     </PlainGridItem>
                                 </Grid>
                                 <Grid item md={3}>
-                                    <PlainGridItem>
+                                    <PlainGridItem sx={{ textAlign: 'center'}}>
                                         <Typography variant="h4" sx={{ color: '#e2615d'}}>Matches: { state.found.length } / { state.matches} </Typography>
                                     </PlainGridItem>
                                 </Grid>
                                 <Grid item md={3}>
-                                    <PlainGridItem>
+                                    <PlainGridItem sx={{ textAlign: 'center'}}>
                                         <Typography variant="h4" sx={{ color: '#e2615d'}}>Rounds: { state.currentRound } / { state.rounds }</Typography>
                                     </PlainGridItem>
                                 </Grid>
                                 <Grid item md={3}>
-                                    <PlainGridItem>
+                                    <PlainGridItem sx={{ textAlign: 'center'}}>
                                         <Button variant="contained" color='danger' onClick={() => Navigate('/Dashboard')}>Exit</Button>
                                     </PlainGridItem>
                                 </Grid>

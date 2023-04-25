@@ -1,6 +1,8 @@
-import { collection, getDocs, where, query, addDoc, deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { collection, getDocs, where, query, addDoc, deleteDoc, doc, updateDoc, or } from "firebase/firestore";
 import { auth, db } from "../firebase";
 import { GetCardSet } from "./PokemonContext";
+
+const searchData = JSON.parse(localStorage.getItem('searchData'));
 
 const createFirebaseDocs = async() => {
     const sets = await GetCardSet();
@@ -31,7 +33,6 @@ const createFirebaseDocs = async() => {
 
 const getSearchDocs = async() => {
 
-    const searchData = JSON.parse(localStorage.getItem('searchData'));
     let response = [];
 
     if (searchData === null) {
@@ -94,9 +95,7 @@ const getSearchDocs = async() => {
 
 }
 
-const updateFavorites = async(favorites) => {
-
-    const user = auth.currentUser;
+const updateFavorites = async(favorites, user = auth.currentUser) => {
 
     const favoritesCollectionRef = collection(db, 'user_favorites');
 
@@ -144,11 +143,11 @@ const sendFriendRequest = async(user) => {
 
     let response;
     const userFriendRequestRef = collection(db, 'user_friends');
-    const senderData = await queryCollection('users', [{field: 'email', operator: '==', value: auth.currentUser.email}]);
+    // const senderData = await queryCollection('users', [{field: 'email', operator: '==', value: auth.currentUser.email}]);
 
     try {
 
-        createUserNotifications({user: user.email, title: 'New friend Request', text: `${user.firstname} ${user.lastname} wants to be your friend!`, link: senderData.id, status: false});
+        createUserNotifications({user: user.email, title: 'New friend Request', text: `${user.firstname} ${user.lastname} wants to be your friend!`, link: auth.currentUser.id, status: false});
     
         await addDoc(userFriendRequestRef, {
             user: auth.currentUser.email,
@@ -186,10 +185,48 @@ const getUserNotification = async() => {
     return notifications;
 }
 
+const getUserFriends = async(user = auth.currentUser) => {
+
+    const friendsRef = collection(db, 'user_friends');
+    const usersRef = collection(db, 'users');
+    const response = [];
+
+    const fq = query(
+        friendsRef,
+        or(where('user', '==', user.email),
+        where('friend', '==', user.email))
+    );
+
+    try {
+        const friendsSnapshot = await getDocs(fq);
+        const friendsData = friendsSnapshot.docs.map(doc => doc.data());
+        let promises;
+
+        if (Object.keys(friendsData[0]).find(s => friendsData[0][s] === user.email) === 'friend') {
+            promises = friendsData.map(fri => getDocs(query(usersRef, where('email', '==', fri.user))));
+        } else {
+            promises = friendsData.map(fri => getDocs(query(usersRef, where('email', '==', fri.friend))));
+        }
+
+        const otherSnapshot = await Promise.all(promises);
+
+        otherSnapshot.forEach(snapshot => {
+            snapshot.docs.forEach(record => {
+                response.push(record.data());
+            });
+        });
+
+        return response;
+    } catch (error) {
+        console.error(error);
+    }
+
+}
+
 const queryCollection = async(model, filters) => {
     // Search users
     let usersCollectionRef = collection(db, model);
-    let response;
+    let response = [];
 
     filters.forEach((filt) => {
         usersCollectionRef = query(usersCollectionRef, where(filt.field, filt.operator, filt.value));
@@ -198,11 +235,9 @@ const queryCollection = async(model, filters) => {
 
     await getDocs(usersCollectionRef).then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
-
-            response = doc.data();
-
-            response['record_id'] = doc.id;
-
+            const record = doc.data();
+            record['record_id'] = doc.id;
+            querySnapshot.docs.length > 1 ? response.push(record) : response = record;
         });
     });
 
@@ -262,4 +297,4 @@ const createUserNotifications = async(data) => {
     return response;
 }
 
-export { getSearchDocs, updateFavorites, createFirebaseDocs, sendFriendRequest, getUserNotification, queryCollection, updateCollection, createUserNotifications, deleteCollection }
+export { getSearchDocs, updateFavorites, createFirebaseDocs, sendFriendRequest, getUserNotification, queryCollection, updateCollection, createUserNotifications, deleteCollection, getUserFriends }

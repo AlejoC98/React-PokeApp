@@ -46,6 +46,7 @@ input[type=number] {
 button.active {
     background-color: #3e4644 !important;
     border: 1px solid #3e4644 !important;
+    cursor: default !important;
 }
 
 .board {
@@ -159,10 +160,16 @@ button.active {
 .fav-btn {
     color: #FFD700 !important;
     z-index: 1000;
+    position: absolute !important;
 }
 
 .cardElement:hover button {
     display: block !important;
+}
+
+.list-items li {
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
 .list-items:hover > div {
