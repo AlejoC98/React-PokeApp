@@ -1,7 +1,6 @@
 import { Avatar, Box, Button, Grid, IconButton, Typography } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React, {useState } from 'react'
 import { GridItem } from '../theme'
-import { useLocation } from 'react-router-dom';
 import CheckIcon from '@mui/icons-material/Check';
 import DeleteIcon from '@mui/icons-material/Delete';
 import GroupIcon from '@mui/icons-material/Group';

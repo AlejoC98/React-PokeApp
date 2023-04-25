@@ -112,7 +112,7 @@ const DisplayItems = ({ data, display = 'list-view', breadcrumb = true}) => {
                                         component='img'
                                         alt={element.name}
                                         height={100}
-                                        image={'logo' in element.images ? element.images.logo : element.images.small}
+                                        image={'profile' in element ? element.profile : 'logo' in element.images ? element.images.logo : element.images.small}
                                         sx={{ objectFit: 'contain', padding: '0.5em'}}
                                     />
                                     <CardContent>
@@ -126,7 +126,11 @@ const DisplayItems = ({ data, display = 'list-view', breadcrumb = true}) => {
                     ))}
                 </Grid>
             ) : (
-                <List>
+                <List sx={{
+                    '& li': {
+                        padding: '0 !important'
+                    }
+                }}>
                     { data.map((element) => (
                         <ListItem key={element.id} className='list-items'>
                             <Button 
@@ -144,7 +148,7 @@ const DisplayItems = ({ data, display = 'list-view', breadcrumb = true}) => {
                                     <StarBorderIcon />
                                 ) }
                             </Button>
-                            <ListItemButton sx={{ padding: '8px 0', left: favoritesDisplay.includes(element.id) ? 0 : 65}} onClick={() => handleOpen(element)}>
+                            <ListItemButton sx={{ padding: '8px 5px', left: favoritesDisplay.includes(element.id) ? 0 : 65}} onClick={() => handleOpen(element)}>
                                 <ListItemText>{element.name}</ListItemText>
                             </ListItemButton>
                         </ListItem>

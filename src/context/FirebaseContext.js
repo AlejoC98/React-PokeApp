@@ -1,6 +1,7 @@
 import { collection, getDocs, where, query, addDoc, deleteDoc, doc, updateDoc, or } from "firebase/firestore";
-import { auth, db } from "../firebase";
+import { auth, db, storage } from "../firebase";
 import { GetCardSet } from "./PokemonContext";
+import { getDownloadURL, uploadBytesResumable, ref } from 'firebase/storage';
 
 const searchData = JSON.parse(localStorage.getItem('searchData'));
 
@@ -297,4 +298,27 @@ const createUserNotifications = async(data) => {
     return response;
 }
 
-export { getSearchDocs, updateFavorites, createFirebaseDocs, sendFriendRequest, getUserNotification, queryCollection, updateCollection, createUserNotifications, deleteCollection, getUserFriends }
+const uploadFiles = async(img_profile, fileName = '') => {
+    let response;
+    if (typeof img_profile !== 'string') {
+        const metadata = {
+          contentType: 'image/jpeg'
+        }
+        
+        if (fileName === '')
+            fileName = [auth.currentUser.displayName].join("_") + auth.currentUser.id;
+        
+        // Upload file and metadata to the object 'images/mountains.jpg'
+        const storageRef = ref(storage, 'users_profiles/' + fileName);
+        // const uploadTask = await uploadBytesResumable(storageRef, img_profile.buffer, metadata);
+        const uploadTask = await uploadBytesResumable(storageRef, img_profile, metadata);
+
+        response = await getDownloadURL(uploadTask.ref);
+      } else {
+        response = img_profile;
+      }
+
+    return response;
+}
+
+export { getSearchDocs, updateFavorites, createFirebaseDocs, sendFriendRequest, getUserNotification, queryCollection, updateCollection, createUserNotifications, deleteCollection, getUserFriends, uploadFiles }

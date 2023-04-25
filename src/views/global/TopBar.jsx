@@ -71,13 +71,14 @@ const Topbar = ({setIsLoading}) => {
   }
 
   useEffect(() => {
-    setInterval(() => {
-      getUserNotification().then((res) => {
-        if (res.length > 0)
-          setnotifications(res);
-      });
-    }, 300000);
-  }, []);
+    if (user)
+      setInterval(() => {
+        getUserNotification().then((res) => {
+          if (res.length > 0)
+            setnotifications(res);
+        });
+      }, 300000);
+  }, [user]);
 
 
   return (

@@ -10,14 +10,12 @@ import {
   signInWithPopup
 } from 'firebase/auth';
 
-import { getDownloadURL, uploadBytesResumable, ref } from 'firebase/storage';
-
 import { collection, addDoc, where, getDocs, query } from "firebase/firestore";
 
-import { auth, storage, db } from "../firebase";
+import { auth, db } from "../firebase";
 
 import { GoogleAuthProvider, FacebookAuthProvider } from "firebase/auth";
-import { queryCollection } from "./FirebaseContext";
+import { queryCollection, uploadFiles } from "./FirebaseContext";
 
 export const UserContext = createContext();
 
@@ -41,11 +39,13 @@ export const AuthContextProvider = ({ children }) => {
 
   // Login in with email and password
   const signIn = async (email, password) => {
-    const authCont = await signInWithEmailAndPassword(auth, email, password);
-    if (authCont.user.emailVerified === false) {
-      setUser(null);
-      throw new Error("Email hasn't been verified");
-    }
+    await signInWithEmailAndPassword(auth, email, password).then(async(authCont) => {
+      const user_record = await queryCollection('users', [
+        {field: 'email', operator: '==', value: authCont.user.email}
+      ]);
+      authCont.user.record_id = user_record.record_id;
+      setUser(authCont);
+    });
   }
 
   // Log Out function
@@ -56,13 +56,16 @@ export const AuthContextProvider = ({ children }) => {
 
   // function to check if user was or is logged
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      queryCollection('users', [
-        {field: 'email', operator: '==', value: currentUser.email}
-      ]).then((res) => {
-        currentUser['id'] = res.id;
-        currentUser !== null ? currentUser.emailVerified === true ? setUser(currentUser) : setUser(null) : setUser(currentUser);
-      });
+    const unsubscribe = onAuthStateChanged(auth, async(currentUser) => {
+      if (currentUser !== null)
+        await queryCollection('users', [
+          {field: 'email', operator: '==', value: currentUser.email}
+        ]).then((res) => {
+          currentUser['id'] = res.id;
+          // currentUser !== null ? currentUser.emailVerified === true ? setUser(currentUser) : setUser(null) : setUser(currentUser);
+        });
+      
+      setUser(currentUser);
     });
 
     return () => {
@@ -90,7 +93,7 @@ export const AuthContextProvider = ({ children }) => {
     });
   }
 
-  const CreateNewUserData = async (user, firstname, lastname, email, img_profile) => {
+  const CreateNewUserData = async (firstname, lastname, email, img_profile) => {
     let upload_img;
     const user_id = Array.from({length: 20}, () => Math.random().toString(36)[2] || Math.floor(Math.random() * 20)).join('');
 
@@ -98,40 +101,34 @@ export const AuthContextProvider = ({ children }) => {
 
     const querySnapshot = await getDocs(q);
 
-    if (!!img_profile) {
-      if (typeof img_profile !== 'string') {
-        const metadata = {
-          contentType: 'image/jpeg'
-        }
-
+    if (querySnapshot.docs.length === 0) {
+      
+      if (!!img_profile) {
         var uniqueImgName = [firstname, lastname].join("_") + user_id;
-        // Upload file and metadata to the object 'images/mountains.jpg'
-        const storageRef = ref(storage, 'users_profiles/' + uniqueImgName);
-        // const uploadTask = await uploadBytesResumable(storageRef, img_profile.buffer, metadata);
-        const uploadTask = await uploadBytesResumable(storageRef, img_profile, metadata);
-
-        upload_img = await getDownloadURL(uploadTask.ref);
+        await uploadFiles(img_profile, uniqueImgName).then((res) => {
+          upload_img = res;
+        });
       } else {
-        upload_img = img_profile;
+        upload_img = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pngall.com%2Fprofile-png%2Fdownload%2F51525&psig=AOvVaw2Cy-FavCzDKct1N41XorEC&ust=1676560375535000&source=images&cd=vfe&ved=0CA8QjRxqFwoTCLiomZ_ol_0CFQAAAAAdAAAAABAE";
       }
-    } else {
-      upload_img = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pngall.com%2Fprofile-png%2Fdownload%2F51525&psig=AOvVaw2Cy-FavCzDKct1N41XorEC&ust=1676560375535000&source=images&cd=vfe&ved=0CA8QjRxqFwoTCLiomZ_ol_0CFQAAAAAdAAAAABAE";
-    }
 
-    if (querySnapshot.docs.length === 0) {      
-      await addDoc(collection(db, "users"), {
+      const record_id = await addDoc(collection(db, "users"), {
         id: user_id,
         email: email,
         firstname: firstname,
         lastname: lastname,
         profile: upload_img
       });
-    }
 
-    await updateProfile(user, {
-      displayName: [firstname, lastname].join(" "),
-      photoURL: upload_img
-    }).catch((err) => {
+      setContextProfile({displayName: [firstname, lastname].join(" "), photoURL: upload_img, record_id: record_id, id: user_id});
+
+    } else {
+      return querySnapshot.docs[0].data();
+    }
+  }
+
+  const setContextProfile = async(fields) => {
+    await updateProfile(user, {...fields}).catch((err) => {
       throw new Error(err);
     });
   }
@@ -167,7 +164,14 @@ export const AuthContextProvider = ({ children }) => {
       console.log(credential);
       // const token = credential.accessToken;
 
-      await CreateNewUserData(result.user, result.user.displayName.split(" ")[0], result.user.displayName.split(" ")[1], result.user.email, result.user.photoURL);
+      const current_record = await CreateNewUserData(result.user.displayName.split(" ")[0], result.user.displayName.split(" ")[1], result.user.email, result.user.photoURL);
+
+      if (current_record)
+        result.user.photoURL = current_record.profile;
+
+      // Savong the data of when it was created and last login
+      result.user['lastLogin'] = result.user.metadata.lastSignInTime;
+      result.user['createdAt'] = result.user.metadata.creationTime;
 
       // The signed-in user info.
       setUser(result.user);
@@ -184,14 +188,12 @@ export const AuthContextProvider = ({ children }) => {
           throw new Error('Option not valid');
       }
 
-      console.log(credential);
-
       throw new Error(error.message);
     });
   }
 
   return (
-    <UserContext.Provider value={{ createUser, user, logOut, signIn, recoveryPassword, popUpProviderLogin }}>
+    <UserContext.Provider value={{ createUser, user, logOut, signIn, recoveryPassword, popUpProviderLogin, setContextProfile }}>
       {children}
     </UserContext.Provider>
   );

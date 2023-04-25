@@ -11,6 +11,7 @@ import { AuthLayout, AppLayaout } from "./views/global/Layaout";
 import { AuthContextProvider } from "./context/AuthContext";
 import { ProtectedRoute, ProtectedLoggedRoute } from './components/ProtectedRoute';
 import UserInfo from "./views/users/UserInfo";
+import Friends from "./views/friends";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/CardSet" element={<CardSet />} />
           <Route path="/CardSet/:set" element={<SetDescription />} />
           <Route path="/CardSet/:set/:card" element={<CardDescription />} />
+          <Route path="/Friends" element={<Friends />} />
           <Route path="/Game" element={<Game />} />
         </Route>
         <Route path="/" element={
