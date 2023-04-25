@@ -1,10 +1,11 @@
-import { Box, Select, TextField, useMediaQuery, FormControl, InputLabel, MenuItem, Typography } from '@mui/material'
+import { Box, Select, TextField, useMediaQuery, FormControl, InputLabel, MenuItem, Typography, FormHelperText } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import { Formik } from 'formik'
 import * as yup from 'yup'
 import { GetCardSet, SetUpGame } from '../context/PokemonContext'
 import { useNavigate } from 'react-router-dom';
 import { UserAuth } from '../context/AuthContext'
+import { createCollection, queryCollection, updateCollection } from '../context/FirebaseContext'
 
 const initialValues = {
     players: '',
@@ -19,7 +20,19 @@ const newGameSchema = yup.object().shape({
     players: yup.string().required('This field is required'),
     playersList: yup.array().of(
         yup.object().shape({
-            name: yup.string().required('This field is required')
+            name: yup.string().required('This field is required').test('is-unique', 'You can repeat a player name', async function(value) {
+                const { path, createError } = this;
+                const otherNames = this.from[1].value.playersList.map(p => {
+                    if (p.name === undefined)
+                        p.name = '';
+                    return p.name.toLowerCase();
+                });
+                const isUnique = otherNames.filter(p => p === value.toLowerCase());
+                if (isUnique.length > 1) {
+                    throw createError({ path, message: 'You cannot repeat a player name' });
+                }
+                return true;
+            })
         })
     ),
     rounds: yup.number().required('This field is required').min(1, 'At least 1 round!').max(10, "Don't use more that 10!"),
@@ -41,10 +54,48 @@ const NewGameForm = ({ form, handleClose, setIsLoading }) => {
     const handleSubmit = (values, { resetForm }) => {
         handleClose();
         setIsLoading(true);
-        SetUpGame(values.cardset, values.level, values.matches).then((res) => {
+        SetUpGame(values.cardset, values.level, values.matches).then(async(res) => {
             resetForm();
-            setIsLoading(false);
-            Navigate('/Game', {state : { data: values, cards: res}});
+            await queryCollection('user_games', [
+                {field: 'user_id', operator: '==', value: user.id}
+            ]).then(async(ug_res) => {
+                if (ug_res.length === 0) {
+                    ug_res = await createCollection('user_games', {
+                        user_id: user.id,
+                        times_played: 1,
+                        times_won: 0,
+                        times_lost: 0,
+                        times_tied: 0,
+                        easy_times: values.level === 10 ? 1 : 0,
+                        medium_times: values.level === 20 ? 1 : 0,
+                        hard_times: values.level === 40 ? 1 : 0
+                    });
+                } else {
+
+                    let update_data = {
+                        times_played: ug_res.times_played + 1
+                    };
+
+                    switch (values.level) {
+                        case 10:
+                            update_data['easy_times'] = 1 + ug_res.easy_times;
+                            break;
+                        case 20:
+                            update_data['medium_times'] = 1 + ug_res.medium_times;
+                            break;
+                        case 40:
+                            update_data['hard_times'] = 1 + ug_res.hard_times;
+                            break;
+                        default:
+                            throw new Error('Level no reconizeg');
+                    }
+                    await updateCollection('user_games', ug_res.record_id, update_data);
+                }
+
+                setIsLoading(false);
+
+                Navigate('/Game', {state : { data: values, cards: res, userGame: ug_res}});
+            });
         }).catch((err) => {
             console.log(err);
         })
@@ -76,7 +127,7 @@ const NewGameForm = ({ form, handleClose, setIsLoading }) => {
             validationSchema={newGameSchema}
             innerRef={form}
             >
-            {({ values, errors, touched, setValues, handleBlur, handleChange, handleSubmit, resetForm}) => (
+            {({ values, errors, touched, setValues, handleBlur, handleChange, handleSubmit, getFieldProps}) => (
                 <form onSubmit={handleSubmit} id='new-game'>
                     <Box
                         display="grid" 
@@ -107,6 +158,7 @@ const NewGameForm = ({ form, handleClose, setIsLoading }) => {
                                     <MenuItem key={i} value={i}>{i}</MenuItem>    
                                 ) }
                             </Select>
+                            <FormHelperText error={touched.players && errors.players}>{errors.players}</FormHelperText>
                         </FormControl>
                         <TextField 
                             fullWidth
@@ -155,6 +207,7 @@ const NewGameForm = ({ form, handleClose, setIsLoading }) => {
                                     <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
                                 )) }
                             </Select>
+                            <FormHelperText error={touched.cardset && errors.cardset}>{ touched.cardset && errors.cardset ? errors.cardset : ''}</FormHelperText>
                         </FormControl>
                         <FormControl sx={{ gridColumn: 'span 4'}}>
                             <InputLabel id="game-level-label">Level</InputLabel>
@@ -167,12 +220,13 @@ const NewGameForm = ({ form, handleClose, setIsLoading }) => {
                                 onChange={handleChange}
                                 value={values.level}
                                 name='level'
-                                error={!!touched.level && !!errors.level}                               
+                                error={!!touched.level && !!errors.level}
                             >
                                 <MenuItem value={10} disabled={values.matches > 5 ? true : false}>Easy</MenuItem>
                                 <MenuItem value={20} disabled={values.matches > 10 ? true : false}>Medium</MenuItem>
                                 <MenuItem value={40} disabled={values.matches > 20 ? true : false}>Hard</MenuItem>
                             </Select>
+                            <FormHelperText error={touched.level && errors.level}>{ touched.level && errors.level ? errors.level : ''}</FormHelperText>
                         </FormControl>                       
                     </Box>
                     <Box mt={2} textAlign='center' display={values.playersList.length > 0 ? 'grid' : 'none'}
@@ -196,6 +250,9 @@ const NewGameForm = ({ form, handleClose, setIsLoading }) => {
                                         inputProps={{style: {textTransform: 'capitalize'}}}
                                         value={player.name}
                                         name={`playersList.${i}.name`}
+                                        {...getFieldProps(`playersList.${i}.name`)}
+                                        error={touched.playersList?.[i]?.name && !!errors.playersList?.[i]?.name}
+                                        helperText={touched.playersList?.[i]?.name && errors.playersList?.[i]?.name}
                                         sx={{
                                             gridColumn: values.playersList.length > 1 ? 'span 2' : 'span 4'
                                         }}

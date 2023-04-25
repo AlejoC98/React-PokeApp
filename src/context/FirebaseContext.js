@@ -164,6 +164,27 @@ const sendFriendRequest = async(user) => {
     return response;
 }
 
+const createUserNotifications = async(data) => {
+    const userNotificationRef = collection(db, 'user_notifications');
+    let response;
+
+    try {
+        await addDoc(userNotificationRef, {
+            user: data.user,
+            title: data.title,
+            text: data.text,
+            link: data.link,
+            status: data.status
+        });
+
+        response = true;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+
+    return response;
+}
+
 const getUserNotification = async() => {
 
     const userNotificationRef = collection(db, 'user_notifications');
@@ -224,6 +245,19 @@ const getUserFriends = async(user = auth.currentUser) => {
 
 }
 
+const createCollection = async(model, data) => {
+
+    let response = false;
+
+    await addDoc(collection(db, model), {...data}).then(() => {
+        response = true;
+    }).catch((err) => {
+        throw new Error(err.message);
+    });
+
+    return response;
+}
+
 const queryCollection = async(model, filters) => {
     // Search users
     let usersCollectionRef = collection(db, model);
@@ -277,27 +311,6 @@ const deleteCollection =async(model, record) => {
     return response;
 }
 
-const createUserNotifications = async(data) => {
-    const userNotificationRef = collection(db, 'user_notifications');
-    let response;
-
-    try {
-        await addDoc(userNotificationRef, {
-            user: data.user,
-            title: data.title,
-            text: data.text,
-            link: data.link,
-            status: data.status
-        });
-
-        response = true;
-    } catch (error) {
-        throw new Error(error.message);
-    }
-
-    return response;
-}
-
 const uploadFiles = async(img_profile, fileName = '') => {
     let response;
     if (typeof img_profile !== 'string') {
@@ -321,4 +334,4 @@ const uploadFiles = async(img_profile, fileName = '') => {
     return response;
 }
 
-export { getSearchDocs, updateFavorites, createFirebaseDocs, sendFriendRequest, getUserNotification, queryCollection, updateCollection, createUserNotifications, deleteCollection, getUserFriends, uploadFiles }
+export { getSearchDocs, updateFavorites, createFirebaseDocs, sendFriendRequest, getUserNotification, queryCollection, updateCollection, createUserNotifications, deleteCollection, getUserFriends, uploadFiles, createCollection }

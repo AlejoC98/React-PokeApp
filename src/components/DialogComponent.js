@@ -24,7 +24,6 @@ const DialogComponent = ({ title, buttonText, setIsLoading, setOpenMenu}) => {
   const handleSubmit = () => {
     if (currentForm.current) {
       currentForm.current.handleSubmit();
-      setOpenMenu(false);
     }
   }
 

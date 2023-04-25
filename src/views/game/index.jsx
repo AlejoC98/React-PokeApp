@@ -1,12 +1,19 @@
 import React, { useEffect, useReducer } from 'react'
 import { Box, Button, Grid, Typography } from "@mui/material";
-// import { styled } from '@mui/material/styles';
-// import Paper from '@mui/material/Paper';
 import { GridItem, PlainGridItem } from "../../theme";
 import { useLocation, useNavigate } from "react-router-dom";
 import CardsElements from "../../components/CardsElements";
 import { SetUpGame } from '../../context/PokemonContext';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import { UserAuth } from '../../context/AuthContext';
+import { updateCollection } from '../../context/FirebaseContext';
+
+async function updateGameRecords(game_record, user_data, winner) {
+    const current_user = user_data.displayName.split(' ');
+    if (winner.name === current_user[0] || winner.name === current_user[1]) {
+        await updateCollection('user_games', game_record.record_id, {times_won: game_record.times_won += 1});
+    }
+}
 
 function reducer(state, action) {
     switch (action.type) {
@@ -22,7 +29,8 @@ function reducer(state, action) {
             }           
             return {
                 ...state,
-                ...fli_res
+                ...fli_res,
+                tries: state.tries += 1
             }
         case 'found_matches':
             let current_player = state.playersList.find(p => p.name === state.playersList[state.turn].name);
@@ -75,8 +83,6 @@ function reducer(state, action) {
                 }
 
             }
-            
-            response.currentRound = (response.currentRound < state.rounds) ? response.currentRound + 1 : 'end';
 
             // Ordering data by matches found
             state.results.data.sort((a, b) => {
@@ -87,6 +93,14 @@ function reducer(state, action) {
             let winner = state.results.data.reduce((a, b) => { return Math.abs(b.total - (state.matches * state.rounds)) < Math.abs(a.total - (state.matches * state.rounds)) ? b : a})
 
             winner['winner'] = true;
+
+            if (response.currentRound < state.rounds) {
+                response.currentRound = response.currentRound + 1 
+            } else { 
+                response.currentRound = 'end';
+                updateGameRecords(state.user_game, state.current_user, winner);
+            }
+            // response.currentRound = (response.currentRound < state.rounds) ? response.currentRound + 1 : 'end';
 
             return {
                 ...state,
@@ -119,26 +133,22 @@ function reducer(state, action) {
     }
 }
 
-// const PlainGridItem = styled(Paper)(({ theme }) => ({
-//     backgroundColor: 'transparent',
-//     boxShadow: 'none',
-//     padding: theme.spacing(0.5),
-//     textAlign: 'center'
-// }));
-
 const Game = () => {
 
     const location = useLocation();
-
     const Navigate = useNavigate();
+    const { user } = UserAuth();
 
     const [state, dispatch] = useReducer(reducer, {
         ...location.state.data,
         cards: location.state.cards,
+        user_game: location.state.userGame,
+        current_user: user,
         flipped: [],
         found: [],
         turn: 0,
         currentRound: 1,
+        tries: 0,
         results: {
             top: 0,
             data: []

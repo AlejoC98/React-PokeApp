@@ -25,6 +25,7 @@
     "formik": "^2.2.9",
     "pokemontcgsdk": "^2.0.0",
     "react": "^18.2.0",
+    "react-calendar": "^4.2.1",
     "react-dom": "^18.2.0",
     "react-loader-spinner": "^5.3.4",
     "react-pro-sidebar": "^1.0.0",

@@ -188,6 +188,8 @@ export const AuthContextProvider = ({ children }) => {
           throw new Error('Option not valid');
       }
 
+      console.log(credential);
+
       throw new Error(error.message);
     });
   }
