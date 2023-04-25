@@ -49,6 +49,7 @@ export const AuthContextProvider = ({ children }) => {
 
   // Log Out function
   const logOut = () => {
+    console.log(auth);
     return signOut(auth);
   }
 
