@@ -2,7 +2,6 @@
   "name": "pokeapp",
   "version": "0.1.0",
   "private": true,
-  "main": "index.js",
   "dependencies": {
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
