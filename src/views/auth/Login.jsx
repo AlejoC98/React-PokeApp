@@ -13,6 +13,7 @@ import { UserAuth } from '../../context/AuthContext';
 import SocialMediaButtons from '../../components/SocialMediaButtons';
 import LockIcon from "@mui/icons-material/Lock";
 import Notification from '../../components/Notification';
+import { useNavigate } from 'react-router-dom';
 
 const initialValues = {
   username: "",
@@ -31,7 +32,7 @@ const Login = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const isNonMobile = useMediaQuery("(min-width:600px)");
-
+  const navigate = useNavigate();
   const [error, setError] = useState({});
   
   const handleFormSubmit = async(values) => {

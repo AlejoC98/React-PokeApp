@@ -8,7 +8,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { PhotoCamera } from '@mui/icons-material';
 import { UserAuth } from '../../context/AuthContext';
-// import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import SocialMediaButtons from '../../components/SocialMediaButtons'
 import Notification from '../../components/Notification'
 
@@ -31,7 +31,7 @@ const SignIn = () => {
     const [imageUpload, setImageUpload] = useState();
     const { createUser } = UserAuth();
     const fileInput = useRef();
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const [error, setError] = useState({});
@@ -44,6 +44,7 @@ const SignIn = () => {
                 status: 'success',
                 message: res
             });
+            navigate("/");
             // (res === true) ? navigate("/") : event.preventDefault();
         }).catch((err) => {
             setError({

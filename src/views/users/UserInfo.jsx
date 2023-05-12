@@ -11,7 +11,7 @@ const UserInfo = () => {
 
     const location = useLocation();
     const { user } = UserAuth();
-    const [friendStatus, setFriendStatus] = useState();
+    const [friendStatus, setFriendStatus] = useState({});
     const [userData, setUserData] = useState();
     const [alert, setAlert] = useState({});
 
@@ -40,7 +40,7 @@ const UserInfo = () => {
                     { field: 'friend', operator: 'in', value: [user.email, userData.email] }
                 ]
             ).then((res) => {
-                if (res !== undefined)
+                if (res !== undefined && res.length > 0)
                     setFriendStatus(res);
             }).catch((err) => {
                 setAlert({
@@ -55,7 +55,7 @@ const UserInfo = () => {
         return (
             <Box>
                 <Notification status={alert.status} message={alert.message} />
-                { user.id !== location.state.link && friendStatus.status === false ? (
+                { user.id !== location.state.link || friendStatus.status === false ? (
                     <UserInformation friendStatus={friendStatus} setFriendStatus={setFriendStatus} userData={userData} location={location} />
                 ) : (
                     <MyAccount />

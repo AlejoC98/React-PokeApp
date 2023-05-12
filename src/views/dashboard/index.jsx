@@ -25,7 +25,7 @@ const Dashboard = ({ setAler }) => {
     queryCollection('user_games', [
       {field: 'user_id', operator: '==', value: user.id}
     ]).then((res) => {
-      if (res !== undefined) {
+      if (res.length > 0 || res !== undefined) {
         setPieData([
           {
             id: 'played',
@@ -72,45 +72,51 @@ const Dashboard = ({ setAler }) => {
             <Box sx={{
               height: '283px', width: '400px',
             }}>
-              <ResponsivePie
-                data={pieData}
-                margin={{ top: 10, right: 80, bottom: 80, left: 120 }}
-                innerRadius={0.5}
-                padAngle={0.7}
-                cornerRadius={3}
-                colors={{ datum: 'data.color' }}
-                borderWidth={1}
-                arcLinkLabelsTextColor='#fff'
-                borderColor={{ from: 'color', modifiers: [['darker', 0.2]] }}
-                enableRadialLabels={false}
-                enableSliceLabels={true}
-                sliceLabel="value"
-                legends={[
-                  {
-                    anchor: 'bottom',
-                    direction: 'row',
-                    justify: false,
-                    translateX: 0,
-                    translateY: 56,
-                    itemsSpacing: 0,
-                    itemWidth: 100,
-                    itemHeight: 18,
-                    itemTextColor: '#fff',
-                    itemDirection: 'left-to-right',
-                    itemOpacity: 1,
-                    symbolSize: 18,
-                    symbolShape: 'circle',
-                    effects: [
-                      {
-                        on: 'hover',
-                        style: {
-                          itemTextColor: '#9b9b9b'
+              { pieData.length > 0 ? (
+                <ResponsivePie
+                  data={pieData}
+                  margin={{ top: 10, right: 80, bottom: 80, left: 120 }}
+                  innerRadius={0.5}
+                  padAngle={0.7}
+                  cornerRadius={3}
+                  colors={{ datum: 'data.color' }}
+                  borderWidth={1}
+                  arcLinkLabelsTextColor='#fff'
+                  borderColor={{ from: 'color', modifiers: [['darker', 0.2]] }}
+                  enableRadialLabels={false}
+                  enableSliceLabels={true}
+                  sliceLabel="value"
+                  legends={[
+                    {
+                      anchor: 'bottom',
+                      direction: 'row',
+                      justify: false,
+                      translateX: 0,
+                      translateY: 56,
+                      itemsSpacing: 0,
+                      itemWidth: 100,
+                      itemHeight: 18,
+                      itemTextColor: '#fff',
+                      itemDirection: 'left-to-right',
+                      itemOpacity: 1,
+                      symbolSize: 18,
+                      symbolShape: 'circle',
+                      effects: [
+                        {
+                          on: 'hover',
+                          style: {
+                            itemTextColor: '#9b9b9b'
+                          }
                         }
-                      }
-                    ]
-                  }
-                ]}
-              />
+                      ]
+                    }
+                  ]}
+                />
+              ) : (
+                <Box display='flex' width='100%' justifyContent='center'>
+                  <Typography variant="h4">You haven't played a game!</Typography>
+                </Box>
+              )}
             </Box>
           </GridItem>
         </Grid>

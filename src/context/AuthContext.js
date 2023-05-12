@@ -44,7 +44,7 @@ export const AuthContextProvider = ({ children }) => {
         {field: 'email', operator: '==', value: authCont.user.email}
       ]);
       authCont.user.record_id = user_record.record_id;
-      setUser(authCont);
+      setUser(authCont.user);
     });
   }
 

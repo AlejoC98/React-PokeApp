@@ -26,7 +26,7 @@ const Friends = () => {
 
   return (
     <Grid container spacing={3}>
-        { friends.length > 0 && (
+        { friends.length > 0 ? (
             <Grid item xs={12} sm={12} md={12} sx={{ marginBottom: 2.2}}>
                 <GridItem>
                     <Typography variant='h2'>
@@ -54,6 +54,12 @@ const Friends = () => {
                             </Box>
                         ))}
                     </Box>
+                </GridItem>
+            </Grid>
+        ) : (
+            <Grid item xs={12} sm={12} md={12}>
+                <GridItem sx={{ textAlign: 'center'}}>
+                    <Typography variant='h2'>You don't have friends yet!</Typography>
                 </GridItem>
             </Grid>
         )}
