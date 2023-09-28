@@ -149,25 +149,16 @@ export const AuthContextProvider = ({ children }) => {
 
     signInWithPopup(auth, provider).then( async(result) => {
       // This gives you a Google Access Token. You can use it to access the Google API.
-      let credential;
       switch (option) {
         case "google":
-          credential = GoogleAuthProvider.credentialFromResult(result);
+          GoogleAuthProvider.credentialFromResult(result);
           break;
         case "meta":
-          credential = FacebookAuthProvider.credentialFromResult(result);
+          FacebookAuthProvider.credentialFromResult(result);
           break;
         default:
           throw new Error('Option not valid');
       }
-
-      console.log(credential);
-      // const token = credential.accessToken;
-
-      const current_record = await CreateNewUserData(result.user.displayName.split(" ")[0], result.user.displayName.split(" ")[1], result.user.email, result.user.photoURL);
-
-      if (current_record)
-        result.user.photoURL = current_record.profile;
 
       // Savong the data of when it was created and last login
       result.user['lastLogin'] = result.user.metadata.lastSignInTime;
@@ -176,19 +167,16 @@ export const AuthContextProvider = ({ children }) => {
       // The signed-in user info.
       setUser(result.user);
     }).catch((error) => {
-      let credential;
       switch (option) {
         case "google":
-          credential = GoogleAuthProvider.credentialFromError(error);
+          GoogleAuthProvider.credentialFromError(error);
           break;
         case "meta":
-          credential = FacebookAuthProvider.credentialFromError(error);
+          FacebookAuthProvider.credentialFromError(error);
           break;
         default:
           throw new Error('Option not valid');
       }
-
-      console.log(credential);
 
       throw new Error(error.message);
     });
