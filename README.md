@@ -1,71 +1,44 @@
-# Getting Started with Create React App
+# Pokémon Card Match Game
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-This project is hosted on Render, you can visit it here https://poke-match.onrender.com
+Welcome to the Pokémon Card Match Game, where you can enjoy playing a card matching game with Pokémon-themed cards. This game utilizes data from the Pokémon TCG API and offers a variety of features for users.
 
-## Available Scripts
+## Live Version
 
-In the project directory, you can run:
+You can check out the live version of this project [here](https://poke-match.onrender.com/).
 
-### `npm start`
+## User Registration
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+You can create an account in two ways:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+1. **Form Registration:** Fill out a registration form with your details.
+2. **Google Account:** Sign up using your Google account for quick access.
 
-### `npm test`
+## Game Features
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Card Matching Game
+- Test your memory with a classic card matching game using Pokémon cards.
+- Complete the game by finding all the matching pairs.
 
-### `npm run build`
+### Pokémon Card Database
+- Explore a vast collection of Pokémon cards.
+- Search for individual cards and view their details, including card type, rarity, attacks, and abilities.
+- Save your favorite Pokémon cards for easy access.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Pokémon Card Packs
+- Browse available card packs.
+- Discover the cards you can get from each pack.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Playing the Card Match Game
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+To start playing the card matching game:
 
-### `npm run eject`
+1. Fill in the necessary game information.
+2. Begin the game, and the card grid will be presented.
+3. Match pairs of Pokémon cards by selecting two cards at a time.
+4. Keep matching cards until all pairs are found.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Installation
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+1. Clone this repository:
+   ```bash
+   git clone https://github.com/AlejoC98/React-PokeApp.git
